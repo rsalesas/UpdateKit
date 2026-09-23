@@ -239,18 +239,26 @@ extension AppUpdater {
                                      runningVersion: String = Bundle.main.shortVersionString,
                                      bundleURL: URL = Bundle.main.bundleURL,
                                      report: @MainActor @escaping (InstallStage) -> Void = { _ in }) async -> Failure? {
+        // Preconditions first, before the download rather than at the hand-off, so a
+        // problem costs a moment instead of the whole transfer.
         if let reason = ineligibilityReason(appName: configuration.appName, bundleURL: bundleURL) {
             return .notEligible(reason)
         }
         guard let (archiveURL, expectedHash) = manifest.installableArchive else {
             return .notEligible("This update doesn't publish an archive the app can install.")
         }
+        if let helper = configuration.swap.helperURL(inBundle: bundleURL),
+           !FileManager.default.isExecutableFile(atPath: helper.path) {
+            return .notEligible("The updater helper is missing from this build.")
+        }
 
         // Staged INSIDE the install directory, not /tmp: the swap needs the
         // replacement on the same volume, and /Applications is often a different one.
         let installDirectory = bundleURL.deletingLastPathComponent()
         let staging = installDirectory
-            .appendingPathComponent(".updatekit-download-\(UUID().uuidString)", isDirectory: true)
+            .appendingPathComponent("\(stagingPrefix)download-\(UUID().uuidString)", isDirectory: true)
+        // Covers every failure path. NOT the success path: that ends in terminate, and
+        // the process is gone before this runs — see `handOff`.
         defer { try? FileManager.default.removeItem(at: staging) }
 
         do {
@@ -260,23 +268,28 @@ extension AppUpdater {
         }
 
         // --- Download ---
-        let data: Data
+        //
+        // Streamed to disk inside staging. The bytes are inert until they are checked
+        // and expanded below.
+        let archiveFile = staging.appendingPathComponent("update.zip")
         do {
-            data = try await download(archiveURL, expecting: manifest.archiveSize, report: report)
+            try await download(archiveURL, expecting: manifest.archiveSize, to: archiveFile, report: report)
         } catch Failure.cancelled {
             // The user asked to stop. Without this the catch below turned it into
             // "Couldn't download the update: …" — an error alert for doing as told.
             return .cancelled
+        } catch let failure as Failure {
+            return failure
         } catch {
             return .download(error.localizedDescription)
         }
 
         // --- Verify the bytes before they become code ---
         report(.verifying)
+        guard let data = try? Data(contentsOf: archiveFile, options: .mappedIfSafe) else {
+            return .install("the downloaded archive couldn't be read back")
+        }
         guard hashMatches(data, expected: expectedHash) else { return .hashMismatch }
-
-        let archiveFile = staging.appendingPathComponent("update.zip")
-        do { try data.write(to: archiveFile) } catch { return .install(error.localizedDescription) }
 
         // --- Expand ---
         let expanded = staging.appendingPathComponent("expanded", isDirectory: true)
@@ -288,12 +301,16 @@ extension AppUpdater {
             return failure
         }
         if let failure = checkNewer(candidate: staged, than: runningVersion) { return failure }
+        if let failure = checkAnnounced(candidate: staged, version: manifest.version) { return failure }
+        if let failure = checkRequiredExecutables(configuration.requiredExecutables, in: staged) {
+            return failure
+        }
 
         // --- Hand off and quit ---
         if Task.isCancelled { return .cancelled }
         report(.relaunching)
         do {
-            try handOff(staged: staged, replacing: bundleURL, swap: configuration.swap)
+            try handOff(staged: staged, clearing: staging, replacing: bundleURL, swap: configuration.swap)
         } catch let failure as Failure {
             return failure
         } catch {
@@ -303,7 +320,7 @@ extension AppUpdater {
         return nil
     }
 
-    /// Progress for `download(_:expecting:report:)`.
+    /// Progress for `download(_:expecting:to:report:)`.
     ///
     /// A delegate rather than iterating `URLSession.bytes`, which is what this used to
     /// do. That sequence yields ONE BYTE per async iteration: measured against a plain
@@ -340,9 +357,15 @@ extension AppUpdater {
                         didFinishDownloadingTo location: URL) {}
     }
 
+    /// Download `url` to `destination`, reporting progress.
+    ///
+    /// Left on disk rather than read into memory: the install only ever needs the file
+    /// (it is checksummed through a mapping and expanded by `ditto`), and holding a
+    /// whole archive in a `Data` for the length of the install costs its full size in
+    /// memory for nothing.
     @MainActor
-    public static func download(_ url: URL, expecting size: Int?,
-                                report: @MainActor @escaping (InstallStage) -> Void) async throws -> Data {
+    public static func download(_ url: URL, expecting size: Int?, to destination: URL,
+                                report: @MainActor @escaping (InstallStage) -> Void) async throws {
         report(.downloading(receivedBytes: 0, totalBytes: size))
         let progress = DownloadProgress { received, total in
             Task { @MainActor in report(.downloading(receivedBytes: received, totalBytes: total)) }
@@ -359,19 +382,37 @@ extension AppUpdater {
         } catch let error as URLError where error.code == .cancelled {
             throw Failure.cancelled
         }
-        // The async API hands over a temp file we now own.
+        // The async API hands over a temp file we now own. Removed on every path; after
+        // a successful move there is nothing left at this URL to remove.
         defer { try? FileManager.default.removeItem(at: fileURL) }
 
         if let http = response as? HTTPURLResponse, http.statusCode != 200 {
             throw Failure.download("the server returned \(http.statusCode)")
         }
-        let data = try Data(contentsOf: fileURL)
         // A published size is part of the contract; a short read means truncation,
         // which the checksum would also catch but this says so more clearly.
-        if let size, data.count != size {
-            throw Failure.download("expected \(size) bytes, received \(data.count)")
+        let written = (try? FileManager.default.attributesOfItem(atPath: fileURL.path)[.size] as? Int) ?? nil
+        if let size, let written, written != size {
+            throw Failure.download("expected \(size) bytes, received \(written)")
         }
-        return data
+        do {
+            try? FileManager.default.removeItem(at: destination)
+            try FileManager.default.moveItem(at: fileURL, to: destination)
+        } catch {
+            throw Failure.install(error.localizedDescription)
+        }
+    }
+
+    /// Download `url` and return its bytes. For callers that want them in memory; the
+    /// install itself uses `download(_:expecting:to:report:)`.
+    @MainActor
+    public static func download(_ url: URL, expecting size: Int?,
+                                report: @MainActor @escaping (InstallStage) -> Void) async throws -> Data {
+        let file = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+            .appendingPathComponent("updatekit-\(UUID().uuidString).download")
+        defer { try? FileManager.default.removeItem(at: file) }
+        try await download(url, expecting: size, to: file, report: report)
+        return try Data(contentsOf: file)
     }
 
     /// `ditto -x -k` rather than an unzip library: it restores the symlinks, resource
@@ -393,22 +434,93 @@ extension AppUpdater {
         return contents.first { $0.pathExtension == "app" }
     }
 
+    /// The version the user was offered must be the version in the box.
+    ///
+    /// `checkNewer` alone would let a manifest announcing 1.4 deliver 3.0 — newer, so
+    /// it passes, but not what anyone agreed to install. Compared as `AppVersion`s so
+    /// "1.4" and "1.4.0" are the same release.
+    public static func checkAnnounced(candidate: URL, version announced: String) -> Failure? {
+        guard let raw = shortVersion(ofBundleAt: candidate), let actual = AppVersion(raw) else {
+            return .signature("the download has no readable version")
+        }
+        guard let expected = AppVersion(announced), actual == expected else {
+            return .signature("the download is version \(raw), not the \(announced) offered")
+        }
+        return nil
+    }
+
+    /// Every path in `relativePaths` must be an executable inside `bundle`. See
+    /// `UpdaterConfiguration.requiredExecutables`.
+    public static func checkRequiredExecutables(_ relativePaths: [String], in bundle: URL) -> Failure? {
+        for path in relativePaths
+        where !FileManager.default.isExecutableFile(atPath: bundle.appendingPathComponent(path).path) {
+            return .install("the download has no \(path)")
+        }
+        return nil
+    }
+
+    /// The prefix of everything the updater leaves beside the installed bundle.
+    public static let stagingPrefix = ".updatekit-"
+
+    /// Remove staging left behind by a force-quit mid-download, or by a helper that
+    /// refused to swap. Without this a killed update leaks a hidden directory the size
+    /// of the app into whatever folder the app lives in.
+    ///
+    /// Call it at launch. Anything younger than `age` is left alone, in case another
+    /// copy of the app is updating right now.
+    ///
+    /// - Parameter prefixes: what to sweep. Pass the updater's own prefix plus any an
+    ///   app used before adopting UpdateKit, so its older leftovers go too.
+    public static func sweepStaleStaging(besideBundle bundleURL: URL = Bundle.main.bundleURL,
+                                         prefixes: [String] = [stagingPrefix],
+                                         olderThan age: TimeInterval = 3600,
+                                         now: Date = Date()) {
+        let manager = FileManager.default
+        let parent = bundleURL.deletingLastPathComponent()
+        let entries = (try? manager.contentsOfDirectory(
+            at: parent, includingPropertiesForKeys: [.creationDateKey])) ?? []
+        for entry in entries {
+            let name = entry.lastPathComponent
+            guard prefixes.contains(where: { name.hasPrefix($0) }) else { continue }
+            let created = (try? entry.resourceValues(forKeys: [.creationDateKey]))?.creationDate
+            guard let created, now.timeIntervalSince(created) > age else { continue }
+            try? manager.removeItem(at: entry)
+        }
+    }
+
     /// Start whatever performs the swap. It waits for this process to exit before
     /// touching anything; the caller quits straight after.
-    private static func handOff(staged: URL, replacing installed: URL, swap: SwapStrategy) throws {
+    private static func handOff(staged: URL, clearing staging: URL,
+                                replacing installed: URL, swap: SwapStrategy) throws {
         // Move the staged app somewhere the staging cleanup won't remove it, still on
         // the install volume so the swap stays a rename.
         let keep = installed.deletingLastPathComponent()
-            .appendingPathComponent(".updatekit-staged-\(UUID().uuidString).app", isDirectory: true)
+            .appendingPathComponent("\(stagingPrefix)staged-\(UUID().uuidString).app", isDirectory: true)
         try FileManager.default.moveItem(at: staged, to: keep)
 
+        // Tear staging down HERE, now that the only thing worth keeping is out of it.
+        //
+        // The `defer` in installUpdate can't be relied on for this: the caller quits
+        // straight after, and the process is gone before that function returns — so
+        // staging (the archive plus its expanded copy, twice the app's size) survived
+        // every successful update. The launch-time sweep couldn't collect it either: it
+        // skips anything under an hour old, and the one launch guaranteed to follow an
+        // update is the one where staging is seconds old.
+        try? FileManager.default.removeItem(at: staging)
+
         let pid = ProcessInfo.processInfo.processIdentifier
-        switch swap {
-        case .builtIn:
-            _ = try BuiltInSwap.launch(pid: pid, staged: keep, installed: installed)
-        case let .helper(_, arguments):
-            try launchHelper(swap.helperURL(inBundle: Bundle.main.bundleURL)!,
-                             arguments: arguments, pid: pid, staged: keep, installed: installed)
+        do {
+            switch swap {
+            case .builtIn:
+                _ = try BuiltInSwap.launch(pid: pid, staged: keep, installed: installed)
+            case let .helper(_, arguments):
+                try launchHelper(swap.helperURL(inBundle: installed)!,
+                                 arguments: arguments, pid: pid, staged: keep, installed: installed)
+            }
+        } catch {
+            // Nothing has been replaced; don't leave the staged copy lying beside it.
+            try? FileManager.default.removeItem(at: keep)
+            throw error
         }
     }
 
@@ -420,17 +532,30 @@ extension AppUpdater {
         guard FileManager.default.isExecutableFile(atPath: helper.path) else {
             throw Failure.install("the updater helper is missing from this build")
         }
+        // Private to this user: the helper is about to be run, and a world-writable
+        // parent would let anyone swap it between the copy and the launch.
         let scratch = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             .appendingPathComponent("updatekit-\(UUID().uuidString)", isDirectory: true)
-        try FileManager.default.createDirectory(at: scratch, withIntermediateDirectories: true)
-        let helperCopy = scratch.appendingPathComponent(helper.lastPathComponent + "-updater")
+        try FileManager.default.createDirectory(at: scratch, withIntermediateDirectories: true,
+                                                attributes: [.posixPermissions: 0o700])
+        let helperCopy = scratch.appendingPathComponent(helper.lastPathComponent)
         try FileManager.default.copyItem(at: helper, to: helperCopy)
+        // copyItem carries extended attributes across. A quarantined binary executed
+        // directly, rather than through LaunchServices, can trigger a Gatekeeper
+        // assessment that wants the network — at the exact moment the app is quitting.
+        helperCopy.withUnsafeFileSystemRepresentation { path in
+            if let path { _ = removexattr(path, "com.apple.quarantine", XATTR_NOFOLLOW) }
+        }
 
         let process = Process()
         process.executableURL = helperCopy
         process.arguments = arguments + ["--pid", String(pid),
                                          "--staged", staged.path,
                                          "--installed", installed.path]
-        try process.run()
+        do {
+            try process.run()
+        } catch {
+            throw Failure.install("the updater helper wouldn't start: \(error.localizedDescription)")
+        }
     }
 }

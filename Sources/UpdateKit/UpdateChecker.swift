@@ -99,15 +99,20 @@ public final class UpdateChecker: ObservableObject {
         return manifest
     }
 
-    /// The version on offer, whether or not the banner is showing it.
+    /// The update on offer, whether or not the banner is showing it.
     ///
     /// Read from `state` rather than `pendingUpdate`, which goes nil once the notice has
-    /// been set aside — an install started before that would otherwise lose the number
-    /// it is installing halfway through.
-    public var availableVersion: String? {
-        if case .available(let manifest) = state { return manifest.version }
+    /// been set aside. Two callers need that distinction: an install started before the
+    /// dismissal would otherwise lose the number it is installing halfway through, and a
+    /// settings screen should keep offering the update — dismissing the notice means
+    /// "stop interrupting me", not "never mention this again".
+    public var availableUpdate: UpdateManifest? {
+        if case .available(let manifest) = state { return manifest }
         return nil
     }
+
+    /// The version on offer, whether or not the banner is showing it.
+    public var availableVersion: String? { availableUpdate?.version }
 
     /// Stop showing the banner for this version. A later version brings it back.
     public func dismissCurrent() {
@@ -117,6 +122,12 @@ public final class UpdateChecker: ObservableObject {
     /// Why this copy can't update itself in place, or nil if it can.
     public var ineligibilityReason: String? {
         AppUpdater.ineligibilityReason(appName: configuration.appName)
+    }
+
+    /// Whether `manifest` can be installed in place, as opposed to needing the disk
+    /// image. One answer for every surface that offers the update, so they can't differ.
+    public func canInstallInPlace(_ manifest: UpdateManifest) -> Bool {
+        manifest.installableArchive != nil && ineligibilityReason == nil
     }
 
     // MARK: - Installing
@@ -170,10 +181,10 @@ public final class UpdateChecker: ObservableObject {
 
     // MARK: - Checking
 
-    /// The launch-time check: skipped when the user has turned it off, or when we
-    /// already looked recently.
+    /// The launch-time check: skipped when the user has turned it off, when we
+    /// already looked recently, or while an install is under way.
     public func checkIfDue(now: Date = Date()) async {
-        guard automaticallyChecks else { return }
+        guard automaticallyChecks, !isInstalling else { return }
         if let last = lastCheck,
            now.timeIntervalSince(last) < configuration.checkInterval { return }
         await check(now: now)
@@ -181,7 +192,13 @@ public final class UpdateChecker: ObservableObject {
 
     /// An explicit "Check for Updates…" — ignores both the interval and the
     /// preference, since the user just asked for it directly.
+    ///
+    /// Does nothing while an install is running. A check replaces `state`, and the
+    /// install reads the version it is installing from there — a periodic check landing
+    /// mid-download would leave the progress window without a version, and one that
+    /// failed would take the offer away while it was being taken up.
     public func check(now: Date = Date()) async {
+        guard !isInstalling else { return }
         state = .checking
         do {
             let data = try await fetch(configuration.manifestURL)

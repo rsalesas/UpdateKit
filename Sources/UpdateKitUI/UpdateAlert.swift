@@ -94,6 +94,9 @@ public enum UpdateAlert {
     /// alert: the menu can be used with no document window open, and then there is no
     /// banner to put it in either.
     public static func install(with checker: UpdateChecker) {
+        // Taken now: the disk image is what the user was offered alongside the install,
+        // so it is what the fallback opens.
+        let diskImage = checker.availableUpdate?.url
         UpdateProgressWindow.shared.show(checker: checker)
         Task {
             let failure = await checker.installAvailableUpdate()
@@ -105,7 +108,14 @@ public enum UpdateAlert {
             alert.messageText = "Couldn't install the update"
             alert.informativeText = failure.errorDescription
                 ?? "The update couldn't be installed. Your copy of \(checker.configuration.appName) is unchanged."
-            alert.runModal()
+            alert.addButton(withTitle: "OK")
+            // Nothing was changed, so the manual route is still open. Offer it here
+            // rather than leaving the user at a dead end to go and find it.
+            if diskImage != nil { alert.addButton(withTitle: "Download Disk Image…") }
+            NSApp.activate(ignoringOtherApps: true)
+            if alert.runModal() == .alertSecondButtonReturn, let diskImage {
+                NSWorkspace.shared.open(diskImage)
+            }
         }
     }
 }

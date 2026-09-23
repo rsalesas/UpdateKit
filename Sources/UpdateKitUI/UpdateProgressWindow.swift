@@ -106,6 +106,14 @@ struct UpdateProgressView: View {
                 }
                 .controlSize(.small)
                 .padding(.top, 16)
+            } else {
+                // Said out loud: an app that vanishes without warning is alarming, and
+                // for an app with no Dock icon there is nothing else on screen to say
+                // it is coming back.
+                Text("\(checker.configuration.appName) will reopen in a moment.")
+                    .font(.system(size: 11))
+                    .foregroundStyle(.tertiary)
+                    .padding(.top, 16)
             }
         }
         .padding(.horizontal, 24)

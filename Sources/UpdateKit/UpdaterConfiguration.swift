@@ -24,6 +24,14 @@ public struct UpdaterConfiguration: @unchecked Sendable {
     public var checkInterval: TimeInterval
     /// Who performs the final swap once the app has quit.
     public var swap: SwapStrategy
+    /// Executables, relative to the bundle root, that a download must contain before it
+    /// is allowed to replace the running copy — e.g. `"Contents/Helpers/mytool"`.
+    ///
+    /// For anything other programs have recorded by absolute path (a CLI on `PATH`, a
+    /// helper an MCP client's config launches). The signature check proves a bundle is
+    /// yours, not that it still has everything where the rest of the system expects it,
+    /// and a release that moved one would strand every caller with no way back.
+    public var requiredExecutables: [String]
     /// Where the "check automatically" preference and the last-check time are kept.
     public var defaults: UserDefaults
     /// Bool, absent reads as `true`.
@@ -37,6 +45,7 @@ public struct UpdaterConfiguration: @unchecked Sendable {
                 manifestURL: URL,
                 checkInterval: TimeInterval = 24 * 60 * 60,
                 swap: SwapStrategy = .builtIn,
+                requiredExecutables: [String] = [],
                 defaults: UserDefaults = .standard,
                 automaticChecksKey: String = "UpdateKit.automaticChecks",
                 lastCheckKey: String = "UpdateKit.lastCheck") {
@@ -46,6 +55,7 @@ public struct UpdaterConfiguration: @unchecked Sendable {
         self.manifestURL = manifestURL
         self.checkInterval = checkInterval
         self.swap = swap
+        self.requiredExecutables = requiredExecutables
         self.defaults = defaults
         self.automaticChecksKey = automaticChecksKey
         self.lastCheckKey = lastCheckKey

@@ -1,6 +1,6 @@
 # UpdateKit
 
-In-app updater for direct-download macOS apps. Extracted from Vaelora (`~/Git/Vaelora`), which is its first user. Keep the two in step: a fix here ships to Vaelora by bumping its `from:` version in `project.yml`.
+In-app updater for direct-download macOS apps. Extracted from Vaelora (`~/Git/Vaelora`), which is its first user; Claunnector (`~/Git/Claunnector`) is the second, with its own swap helper. Keep the two in step: a fix here ships to Vaelora by bumping its `from:` version in `project.yml`.
 
 ## The security boundary
 
@@ -8,6 +8,8 @@ In-app updater for direct-download macOS apps. Extracted from Vaelora (`~/Git/Va
 
 - **Checksum.** The SHA-256 comes from the manifest. `installableArchive` returns nil unless there is a well-formed 64-character hash. A missing checksum must never be read as a passed one.
 - **Signature.** `requirementString` pins the bundle ID, the team, *and* both Developer ID OIDs (the CA intermediate and the Application leaf). Pinning only the team accepted an Apple Development build from the same team. A test in Vaelora caught that, and it's the test that proves it: `a development signed build of our own team is refused`. It needs a signed test host, so it lives in the app's tests, not here.
+- **Announced version.** `checkAnnounced`: the bundle's version must equal the manifest's, so "newer" can't mean "anything newer".
+- **Required executables.** `configuration.requiredExecutables` must all be executable in the staged bundle.
 - **Newer only.** `checkNewer` compares with `AppVersion` (numerically, so 0.2.10 > 0.2.9) against the version inside the downloaded bundle.
 
 Test every check against input that should fail, not only against the happy path.
@@ -16,6 +18,7 @@ Test every check against input that should fail, not only against the happy path
 
 - `.helper` → `UpdateSwap.run`: one atomic `replaceItemAt`.
 - `.builtIn` → `BuiltInSwap.script`: `mv` aside, `mv` in, with rollback. Paths are **positional parameters**, never spliced into the script text. `SwapTests` has a directory named with `$(…)` and quotes to hold that in place.
+- Staging is removed in `handOff`, before the app quits. The `defer` in `installUpdate` covers failures only: on success the process is gone before it runs.
 - The staged copy is always placed in the install directory, never `/tmp`, so the swap is a rename on the same volume.
 
 ## Conventions

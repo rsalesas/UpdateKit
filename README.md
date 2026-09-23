@@ -11,6 +11,8 @@ Replacing your own bundle skips the Gatekeeper check that a downloaded app would
 - its SHA-256 matches the one in the manifest, which was fetched over HTTPS;
 - the app inside is validly signed with a **Developer ID Application** certificate, from **your team**, for **your bundle identifier**;
 - its version is **strictly newer** than the running copy, so a replayed or rolled-back manifest can't downgrade anyone.
+- its version is **the one the manifest announced**, so the user gets the release they agreed to;
+- it contains every path in `requiredExecutables`, for helpers other programs launch by absolute path.
 
 Pinning your team matters. A check that accepts any valid Developer ID accepts every paid developer account. So does a team-only check: an Apple Development build signed with your own team would pass it. That is why the requirement also checks Apple's Developer ID certificate markers.
 
@@ -56,6 +58,8 @@ VStack(spacing: 0) {
 Toggle("Check for updates automatically", isOn: $updates.automaticallyChecks)
 ```
 
+At launch, `AppUpdater.sweepStaleStaging()` removes anything a force-quit mid-download left beside the bundle. Pass `prefixes:` to also sweep names an older, home-grown updater used.
+
 The preference and the last-check time are stored in `UserDefaults` under `UpdateKit.automaticChecks` and `UpdateKit.lastCheck`. Pass `defaults:`, `automaticChecksKey:` and `lastCheckKey:` to keep them somewhere else, for example keys your settings screen already uses.
 
 ### The swap
@@ -67,6 +71,14 @@ An app bundle can't replace itself while its own code is running. Something outs
 
 ```swift
 swap: .helper(relativePath: "Contents/Helpers/example", arguments: ["apply-update"])
+```
+
+A helper of your own doesn't have to call `UpdateSwap.run`. Anything that honours `--pid`, `--staged` and `--installed` will do, and `arguments` can carry more (Claunnector passes the socket its helper waits on).
+
+If other programs launch something inside your bundle by absolute path, list it so a release that moved it is refused rather than installed:
+
+```swift
+requiredExecutables: ["Contents/Helpers/example"]
 ```
 
 ## Publishing a release
