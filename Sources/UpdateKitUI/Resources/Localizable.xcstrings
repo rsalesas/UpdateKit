@@ -4,6 +4,12 @@
     "%@ %@ is available" : {
       "comment" : "An update has been published. The arguments are the app's name and the new version number.",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ %2$@ ist verfügbar"
+          }
+        },
         "en-GB" : {
           "stringUnit" : {
             "state" : "new",
@@ -15,6 +21,12 @@
     "%@ %@ is the latest version." : {
       "comment" : "Alert text after Check for Updates finds nothing newer. The arguments are the app's name and its version.",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ %2$@ ist die neueste Version."
+          }
+        },
         "en-GB" : {
           "stringUnit" : {
             "state" : "new",
@@ -26,6 +38,12 @@
     "%@ Downloading opens the disk image — drag %@ to your Applications folder to finish installing it." : {
       "comment" : "Update dialog. The first argument is a whole sentence saying why the app can't update itself; the second is the app's name.",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ Nach dem Herunterladen öffnet sich das Disk-Image – ziehe %2$@ in deinen Ordner „Programme“, um die Installation abzuschließen."
+          }
+        },
         "en-GB" : {
           "stringUnit" : {
             "state" : "new",
@@ -37,6 +55,12 @@
     "%@ Drag %@ to your Applications folder to install it." : {
       "comment" : "Tooltip on the Download Disk Image button. The first argument is a whole sentence saying why the app can't update itself; the second is the app's name.",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ Ziehe %2$@ in deinen Ordner „Programme“, um es zu installieren."
+          }
+        },
         "en-GB" : {
           "stringUnit" : {
             "state" : "new",
@@ -46,64 +70,224 @@
       }
     },
     "%@ will reopen in a moment." : {
-      "comment" : "Update window, just before the app quits to relaunch. The argument is the app's name."
+      "comment" : "Update window, just before the app quits to relaunch. The argument is the app's name.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ wird gleich wieder geöffnet."
+          }
+        }
+      }
     },
     "A newer version is available." : {
-      "comment" : "Update dialog text when there are no release notes."
+      "comment" : "Update dialog text when there are no release notes.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Eine neuere Version ist verfügbar."
+          }
+        }
+      }
     },
     "A newer version is available. %@ can install it and relaunch." : {
-      "comment" : "Update dialog text when there are no release notes. The argument is the app's name."
+      "comment" : "Update dialog text when there are no release notes. The argument is the app's name.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Eine neuere Version ist verfügbar. %@ kann sie installieren und neu starten."
+          }
+        }
+      }
     },
     "Cancel" : {
-      "comment" : "Button: stop the update download."
+      "comment" : "Button: stop the update download.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Abbrechen"
+          }
+        }
+      }
     },
     "Couldn't check for updates" : {
-      "comment" : "Alert title when Check for Updates fails."
+      "comment" : "Alert title when Check for Updates fails.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Suche nach Updates fehlgeschlagen"
+          }
+        }
+      }
     },
     "Couldn't install the update" : {
-      "comment" : "Alert title when an in-place update fails."
+      "comment" : "Alert title when an in-place update fails.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Update konnte nicht installiert werden"
+          }
+        }
+      }
     },
     "Dismiss until the next version" : {
-      "comment" : "Tooltip on the update banner's close button."
+      "comment" : "Tooltip on the update banner's close button.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bis zur nächsten Version ausblenden"
+          }
+        }
+      }
     },
     "Download" : {
-      "comment" : "Button: open the update's disk image in the browser instead."
+      "comment" : "Button: open the update's disk image in the browser instead.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Herunterladen"
+          }
+        }
+      }
     },
     "Download Disk Image…" : {
-      "comment" : "Button: open the update's disk image in the browser."
+      "comment" : "Button: open the update's disk image in the browser.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Disk-Image herunterladen …"
+          }
+        }
+      }
     },
     "Downloading opens the disk image — drag %@ to your Applications folder to finish installing it." : {
-      "comment" : "Update dialog. The argument is the app's name."
+      "comment" : "Update dialog. The argument is the app's name.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nach dem Herunterladen öffnet sich das Disk-Image – ziehe %@ in deinen Ordner „Programme“, um die Installation abzuschließen."
+          }
+        }
+      }
     },
     "Drag %@ to your Applications folder to install it." : {
-      "comment" : "Tooltip on the Download Disk Image button. The argument is the app's name."
+      "comment" : "Tooltip on the Download Disk Image button. The argument is the app's name.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ziehe %@ in deinen Ordner „Programme“, um es zu installieren."
+          }
+        }
+      }
     },
     "Finishing…" : {
-      "comment" : "Update progress, between stages."
+      "comment" : "Update progress, between stages.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wird abgeschlossen …"
+          }
+        }
+      }
     },
     "Later" : {
-      "comment" : "Button: close the update dialog without updating."
+      "comment" : "Button: close the update dialog without updating.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Später"
+          }
+        }
+      }
     },
     "OK" : {
-      "comment" : "Button: close the alert."
+      "comment" : "Button: close the alert.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "OK"
+          }
+        }
+      }
     },
     "The update couldn't be installed. Your copy of %@ is unchanged." : {
-      "comment" : "Alert text when an in-place update fails for no stated reason. The argument is the app's name."
+      "comment" : "Alert text when an in-place update fails for no stated reason. The argument is the app's name.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Das Update konnte nicht installiert werden. Deine Version von %@ bleibt unverändert."
+          }
+        }
+      }
     },
     "Update and Relaunch" : {
-      "comment" : "Button: install the update in place and reopen the app."
+      "comment" : "Button: install the update in place and reopen the app.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aktualisieren und neu starten"
+          }
+        }
+      }
     },
     "Updating %@" : {
-      "comment" : "Title of the window shown while an update installs. The argument is the app's name."
+      "comment" : "Title of the window shown while an update installs. The argument is the app's name.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ wird aktualisiert"
+          }
+        }
+      }
     },
     "Updating…" : {
-      "comment" : "Update banner, while an update installs."
+      "comment" : "Update banner, while an update installs.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wird aktualisiert …"
+          }
+        }
+      }
     },
     "Version %@" : {
-      "comment" : "Under the update window's title. The argument is the new version number."
+      "comment" : "Under the update window's title. The argument is the new version number.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Version %@"
+          }
+        }
+      }
     },
     "You're up to date" : {
-      "comment" : "Alert title after Check for Updates finds nothing newer."
+      "comment" : "Alert title after Check for Updates finds nothing newer.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Alles ist aktuell"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

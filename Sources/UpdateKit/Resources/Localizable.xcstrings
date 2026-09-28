@@ -4,6 +4,12 @@
     "%@ can't write to %@, so it can't replace itself." : {
       "comment" : "Why the app can't update in place. The arguments are the app's name and a folder name.",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ kann nicht in %2$@ schreiben und sich daher nicht selbst ersetzen."
+          }
+        },
         "en-GB" : {
           "stringUnit" : {
             "state" : "new",
@@ -13,17 +19,47 @@
       }
     },
     "Couldn't download the update: %@" : {
-      "comment" : "Update error. The argument is a short lower-case reason, e.g. \"the server returned 404\"."
+      "comment" : "Update error. The argument is a short lower-case reason, e.g. \"the server returned 404\".",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Das Update konnte nicht geladen werden: %@"
+          }
+        }
+      }
     },
     "Couldn't replace the installed app: %@" : {
-      "comment" : "Update error. The argument is a short lower-case reason."
+      "comment" : "Update error. The argument is a short lower-case reason.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Die installierte App konnte nicht ersetzt werden: %@"
+          }
+        }
+      }
     },
     "Downloading — %@" : {
-      "comment" : "Update progress when the total size is unknown. The argument is the amount downloaded so far, e.g. \"1.2 MB\"."
+      "comment" : "Update progress when the total size is unknown. The argument is the amount downloaded so far, e.g. \"1.2 MB\".",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wird geladen – %@"
+          }
+        }
+      }
     },
     "Downloading — %@ of %@" : {
       "comment" : "Update progress. The arguments are the amount downloaded so far and the total, e.g. \"1.2 MB of 5 MB\".",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wird geladen – %1$@ von %2$@"
+          }
+        },
         "en-GB" : {
           "stringUnit" : {
             "state" : "new",
@@ -33,35 +69,113 @@
       }
     },
     "Move %@ to your Applications folder to update it in place." : {
-      "comment" : "Why the app can't update in place: it is running from a disk image or a quarantined location. The argument is the app's name."
+      "comment" : "Why the app can't update in place: it is running from a disk image or a quarantined location. The argument is the app's name.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bewege %@ in deinen Ordner „Programme“, um es direkt zu aktualisieren."
+          }
+        }
+      }
     },
     "Relaunching…" : {
-      "comment" : "Update progress, as the app quits to reopen as the new version."
+      "comment" : "Update progress, as the app quits to reopen as the new version.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wird neu gestartet …"
+          }
+        }
+      }
     },
     "The download didn't contain an app." : {
-      "comment" : "Update error."
+      "comment" : "Update error.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Download enthielt keine App."
+          }
+        }
+      }
     },
     "The download didn't match its published checksum, so it wasn't installed." : {
-      "comment" : "Update error."
+      "comment" : "Update error.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Download stimmte nicht mit seiner veröffentlichten Prüfsumme überein und wurde daher nicht installiert."
+          }
+        }
+      }
     },
     "The download is version %@, which isn't newer." : {
-      "comment" : "Update error. The argument is a version number, e.g. \"1.4.2\"."
+      "comment" : "Update error. The argument is a version number, e.g. \"1.4.2\".",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Download hat die Version %@, die nicht neuer ist."
+          }
+        }
+      }
     },
     "The download isn't correctly signed: %@" : {
-      "comment" : "Update error. The argument is a short lower-case reason, e.g. \"it isn't signed\"."
+      "comment" : "Update error. The argument is a short lower-case reason, e.g. \"it isn't signed\".",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Download ist nicht korrekt signiert: %@"
+          }
+        }
+      }
     },
     "The downloaded archive couldn't be expanded." : {
-      "comment" : "Update error."
+      "comment" : "Update error.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Das geladene Archiv konnte nicht entpackt werden."
+          }
+        }
+      }
     },
     "The update server returned status %lld." : {
-      "comment" : "Update check error. The argument is an HTTP status code, e.g. 404."
+      "comment" : "Update check error. The argument is an HTTP status code, e.g. 404.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Update-Server hat den Status %lld zurückgegeben."
+          }
+        }
+      }
     },
     "The updater helper is missing from this build." : {
-      "comment" : "Why an update can't be installed in place."
+      "comment" : "Why an update can't be installed in place.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Das Update-Hilfsprogramm fehlt in diesem Build."
+          }
+        }
+      }
     },
     "This build of %@ is sandboxed, so it cannot replace itself in %@." : {
       "comment" : "Why the app can't update in place. The arguments are the app's name and a folder name, e.g. \"Applications\".",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieser Build von %1$@ läuft in einer Sandbox und kann sich daher nicht selbst in %2$@ ersetzen."
+          }
+        },
         "en-GB" : {
           "stringUnit" : {
             "state" : "new",
@@ -71,20 +185,58 @@
       }
     },
     "This update doesn't publish an archive the app can install." : {
-      "comment" : "Why an update can't be installed in place."
+      "comment" : "Why an update can't be installed in place.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieses Update bietet kein Archiv an, das die App installieren kann."
+          }
+        }
+      }
     },
     "Unreadable version in the update manifest." : {
-      "comment" : "Update check error: the published version number couldn't be read."
+      "comment" : "Update check error: the published version number couldn't be read.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Die Versionsnummer im Update-Manifest ist nicht lesbar."
+          }
+        }
+      }
     },
     "Unreadable version in this build." : {
-      "comment" : "Update check error: the running app's version number couldn't be read."
+      "comment" : "Update check error: the running app's version number couldn't be read.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Die Versionsnummer dieses Builds ist nicht lesbar."
+          }
+        }
+      }
     },
     "Verifying the download…" : {
-      "comment" : "Update progress, after the download and before the relaunch."
+      "comment" : "Update progress, after the download and before the relaunch.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Download wird geprüft …"
+          }
+        }
+      }
     },
     "expected %@, received %@" : {
       "comment" : "Reason inside \"Couldn't download the update: %@\". The arguments are exact sizes, e.g. \"5,242,880 bytes\".",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "erwartet: %1$@, erhalten: %2$@"
+          }
+        },
         "en-GB" : {
           "stringUnit" : {
             "state" : "new",
@@ -94,29 +246,91 @@
       }
     },
     "it isn't signed" : {
-      "comment" : "Reason inside \"The download isn't correctly signed: %@\"; \"it\" is the downloaded app."
+      "comment" : "Reason inside \"The download isn't correctly signed: %@\"; \"it\" is the downloaded app.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "die App ist nicht signiert"
+          }
+        }
+      }
     },
     "it isn't signed by the expected developer certificate" : {
-      "comment" : "Reason inside \"The download isn't correctly signed: %@\"; \"it\" is the downloaded app."
+      "comment" : "Reason inside \"The download isn't correctly signed: %@\"; \"it\" is the downloaded app.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "die App ist nicht mit dem erwarteten Entwicklerzertifikat signiert"
+          }
+        }
+      }
     },
     "its contents don't match its signature" : {
-      "comment" : "Reason inside \"The download isn't correctly signed: %@\"; \"its\" is the downloaded app's."
+      "comment" : "Reason inside \"The download isn't correctly signed: %@\"; \"its\" is the downloaded app's.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ihr Inhalt stimmt nicht mit ihrer Signatur überein"
+          }
+        }
+      }
     },
     "its signature is invalid — the download may be damaged or altered" : {
-      "comment" : "Reason inside \"The download isn't correctly signed: %@\"; \"its\" is the downloaded app's."
+      "comment" : "Reason inside \"The download isn't correctly signed: %@\"; \"its\" is the downloaded app's.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ihre Signatur ist ungültig – der Download ist möglicherweise beschädigt oder verändert"
+          }
+        }
+      }
     },
     "the bundle couldn't be read (OSStatus %d)" : {
-      "comment" : "Reason inside \"The download isn't correctly signed: %@\". The argument is a system error code."
+      "comment" : "Reason inside \"The download isn't correctly signed: %@\". The argument is a system error code.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "das Bundle konnte nicht gelesen werden (OSStatus %d)"
+          }
+        }
+      }
     },
     "the download has no %@" : {
-      "comment" : "Reason inside \"Couldn't replace the installed app: %@\". The argument is a path inside the app, e.g. \"Contents/Helpers/tool\"."
+      "comment" : "Reason inside \"Couldn't replace the installed app: %@\". The argument is a path inside the app, e.g. \"Contents/Helpers/tool\".",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "im Download fehlt %@"
+          }
+        }
+      }
     },
     "the download has no readable version" : {
-      "comment" : "Reason inside \"The download isn't correctly signed: %@\"."
+      "comment" : "Reason inside \"The download isn't correctly signed: %@\".",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "der Download hat keine lesbare Versionsnummer"
+          }
+        }
+      }
     },
     "the download is version %@, not the %@ offered" : {
       "comment" : "Reason inside \"The download isn't correctly signed: %@\". The arguments are version numbers.",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "der Download hat die Version %1$@, nicht die angebotene %2$@"
+          }
+        },
         "en-GB" : {
           "stringUnit" : {
             "state" : "new",
@@ -126,19 +340,59 @@
       }
     },
     "the downloaded archive couldn't be read back" : {
-      "comment" : "Reason inside \"Couldn't replace the installed app: %@\"."
+      "comment" : "Reason inside \"Couldn't replace the installed app: %@\".",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "das geladene Archiv konnte nicht wieder gelesen werden"
+          }
+        }
+      }
     },
     "the requirement couldn't be compiled (OSStatus %d)" : {
-      "comment" : "Reason inside \"The download isn't correctly signed: %@\". The argument is a system error code."
+      "comment" : "Reason inside \"The download isn't correctly signed: %@\". The argument is a system error code.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "die Anforderung konnte nicht kompiliert werden (OSStatus %d)"
+          }
+        }
+      }
     },
     "the server returned %lld" : {
-      "comment" : "Reason inside \"Couldn't download the update: %@\". The argument is an HTTP status code, e.g. 404."
+      "comment" : "Reason inside \"Couldn't download the update: %@\". The argument is an HTTP status code, e.g. 404.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "der Server hat %lld zurückgegeben"
+          }
+        }
+      }
     },
     "the updater helper is missing from this build" : {
-      "comment" : "Reason inside \"Couldn't replace the installed app: %@\"."
+      "comment" : "Reason inside \"Couldn't replace the installed app: %@\".",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "das Update-Hilfsprogramm fehlt in diesem Build"
+          }
+        }
+      }
     },
     "the updater helper wouldn't start: %@" : {
-      "comment" : "Reason inside \"Couldn't replace the installed app: %@\". The argument is a system error message."
+      "comment" : "Reason inside \"Couldn't replace the installed app: %@\". The argument is a system error message.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "das Update-Hilfsprogramm ließ sich nicht starten: %@"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
