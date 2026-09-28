@@ -1,0 +1,145 @@
+{
+  "sourceLanguage" : "en-GB",
+  "strings" : {
+    "%@ can't write to %@, so it can't replace itself." : {
+      "comment" : "Why the app can't update in place. The arguments are the app's name and a folder name.",
+      "localizations" : {
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ can't write to %2$@, so it can't replace itself."
+          }
+        }
+      }
+    },
+    "Couldn't download the update: %@" : {
+      "comment" : "Update error. The argument is a short lower-case reason, e.g. \"the server returned 404\"."
+    },
+    "Couldn't replace the installed app: %@" : {
+      "comment" : "Update error. The argument is a short lower-case reason."
+    },
+    "Downloading — %@" : {
+      "comment" : "Update progress when the total size is unknown. The argument is the amount downloaded so far, e.g. \"1.2 MB\"."
+    },
+    "Downloading — %@ of %@" : {
+      "comment" : "Update progress. The arguments are the amount downloaded so far and the total, e.g. \"1.2 MB of 5 MB\".",
+      "localizations" : {
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloading — %1$@ of %2$@"
+          }
+        }
+      }
+    },
+    "Move %@ to your Applications folder to update it in place." : {
+      "comment" : "Why the app can't update in place: it is running from a disk image or a quarantined location. The argument is the app's name."
+    },
+    "Relaunching…" : {
+      "comment" : "Update progress, as the app quits to reopen as the new version."
+    },
+    "The download didn't contain an app." : {
+      "comment" : "Update error."
+    },
+    "The download didn't match its published checksum, so it wasn't installed." : {
+      "comment" : "Update error."
+    },
+    "The download is version %@, which isn't newer." : {
+      "comment" : "Update error. The argument is a version number, e.g. \"1.4.2\"."
+    },
+    "The download isn't correctly signed: %@" : {
+      "comment" : "Update error. The argument is a short lower-case reason, e.g. \"it isn't signed\"."
+    },
+    "The downloaded archive couldn't be expanded." : {
+      "comment" : "Update error."
+    },
+    "The update server returned status %lld." : {
+      "comment" : "Update check error. The argument is an HTTP status code, e.g. 404."
+    },
+    "The updater helper is missing from this build." : {
+      "comment" : "Why an update can't be installed in place."
+    },
+    "This build of %@ is sandboxed, so it cannot replace itself in %@." : {
+      "comment" : "Why the app can't update in place. The arguments are the app's name and a folder name, e.g. \"Applications\".",
+      "localizations" : {
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "This build of %1$@ is sandboxed, so it cannot replace itself in %2$@."
+          }
+        }
+      }
+    },
+    "This update doesn't publish an archive the app can install." : {
+      "comment" : "Why an update can't be installed in place."
+    },
+    "Unreadable version in the update manifest." : {
+      "comment" : "Update check error: the published version number couldn't be read."
+    },
+    "Unreadable version in this build." : {
+      "comment" : "Update check error: the running app's version number couldn't be read."
+    },
+    "Verifying the download…" : {
+      "comment" : "Update progress, after the download and before the relaunch."
+    },
+    "expected %@, received %@" : {
+      "comment" : "Reason inside \"Couldn't download the update: %@\". The arguments are exact sizes, e.g. \"5,242,880 bytes\".",
+      "localizations" : {
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "expected %1$@, received %2$@"
+          }
+        }
+      }
+    },
+    "it isn't signed" : {
+      "comment" : "Reason inside \"The download isn't correctly signed: %@\"; \"it\" is the downloaded app."
+    },
+    "it isn't signed by the expected developer certificate" : {
+      "comment" : "Reason inside \"The download isn't correctly signed: %@\"; \"it\" is the downloaded app."
+    },
+    "its contents don't match its signature" : {
+      "comment" : "Reason inside \"The download isn't correctly signed: %@\"; \"its\" is the downloaded app's."
+    },
+    "its signature is invalid — the download may be damaged or altered" : {
+      "comment" : "Reason inside \"The download isn't correctly signed: %@\"; \"its\" is the downloaded app's."
+    },
+    "the bundle couldn't be read (OSStatus %d)" : {
+      "comment" : "Reason inside \"The download isn't correctly signed: %@\". The argument is a system error code."
+    },
+    "the download has no %@" : {
+      "comment" : "Reason inside \"Couldn't replace the installed app: %@\". The argument is a path inside the app, e.g. \"Contents/Helpers/tool\"."
+    },
+    "the download has no readable version" : {
+      "comment" : "Reason inside \"The download isn't correctly signed: %@\"."
+    },
+    "the download is version %@, not the %@ offered" : {
+      "comment" : "Reason inside \"The download isn't correctly signed: %@\". The arguments are version numbers.",
+      "localizations" : {
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "the download is version %1$@, not the %2$@ offered"
+          }
+        }
+      }
+    },
+    "the downloaded archive couldn't be read back" : {
+      "comment" : "Reason inside \"Couldn't replace the installed app: %@\"."
+    },
+    "the requirement couldn't be compiled (OSStatus %d)" : {
+      "comment" : "Reason inside \"The download isn't correctly signed: %@\". The argument is a system error code."
+    },
+    "the server returned %lld" : {
+      "comment" : "Reason inside \"Couldn't download the update: %@\". The argument is an HTTP status code, e.g. 404."
+    },
+    "the updater helper is missing from this build" : {
+      "comment" : "Reason inside \"Couldn't replace the installed app: %@\"."
+    },
+    "the updater helper wouldn't start: %@" : {
+      "comment" : "Reason inside \"Couldn't replace the installed app: %@\". The argument is a system error message."
+    }
+  },
+  "version" : "1.0"
+}

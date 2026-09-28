@@ -1,0 +1,110 @@
+{
+  "sourceLanguage" : "en-GB",
+  "strings" : {
+    "%@ %@ is available" : {
+      "comment" : "An update has been published. The arguments are the app's name and the new version number.",
+      "localizations" : {
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ is available"
+          }
+        }
+      }
+    },
+    "%@ %@ is the latest version." : {
+      "comment" : "Alert text after Check for Updates finds nothing newer. The arguments are the app's name and its version.",
+      "localizations" : {
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ is the latest version."
+          }
+        }
+      }
+    },
+    "%@ Downloading opens the disk image — drag %@ to your Applications folder to finish installing it." : {
+      "comment" : "Update dialog. The first argument is a whole sentence saying why the app can't update itself; the second is the app's name.",
+      "localizations" : {
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ Downloading opens the disk image — drag %2$@ to your Applications folder to finish installing it."
+          }
+        }
+      }
+    },
+    "%@ Drag %@ to your Applications folder to install it." : {
+      "comment" : "Tooltip on the Download Disk Image button. The first argument is a whole sentence saying why the app can't update itself; the second is the app's name.",
+      "localizations" : {
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ Drag %2$@ to your Applications folder to install it."
+          }
+        }
+      }
+    },
+    "%@ will reopen in a moment." : {
+      "comment" : "Update window, just before the app quits to relaunch. The argument is the app's name."
+    },
+    "A newer version is available." : {
+      "comment" : "Update dialog text when there are no release notes."
+    },
+    "A newer version is available. %@ can install it and relaunch." : {
+      "comment" : "Update dialog text when there are no release notes. The argument is the app's name."
+    },
+    "Cancel" : {
+      "comment" : "Button: stop the update download."
+    },
+    "Couldn't check for updates" : {
+      "comment" : "Alert title when Check for Updates fails."
+    },
+    "Couldn't install the update" : {
+      "comment" : "Alert title when an in-place update fails."
+    },
+    "Dismiss until the next version" : {
+      "comment" : "Tooltip on the update banner's close button."
+    },
+    "Download" : {
+      "comment" : "Button: open the update's disk image in the browser instead."
+    },
+    "Download Disk Image…" : {
+      "comment" : "Button: open the update's disk image in the browser."
+    },
+    "Downloading opens the disk image — drag %@ to your Applications folder to finish installing it." : {
+      "comment" : "Update dialog. The argument is the app's name."
+    },
+    "Drag %@ to your Applications folder to install it." : {
+      "comment" : "Tooltip on the Download Disk Image button. The argument is the app's name."
+    },
+    "Finishing…" : {
+      "comment" : "Update progress, between stages."
+    },
+    "Later" : {
+      "comment" : "Button: close the update dialog without updating."
+    },
+    "OK" : {
+      "comment" : "Button: close the alert."
+    },
+    "The update couldn't be installed. Your copy of %@ is unchanged." : {
+      "comment" : "Alert text when an in-place update fails for no stated reason. The argument is the app's name."
+    },
+    "Update and Relaunch" : {
+      "comment" : "Button: install the update in place and reopen the app."
+    },
+    "Updating %@" : {
+      "comment" : "Title of the window shown while an update installs. The argument is the app's name."
+    },
+    "Updating…" : {
+      "comment" : "Update banner, while an update installs."
+    },
+    "Version %@" : {
+      "comment" : "Under the update window's title. The argument is the new version number."
+    },
+    "You're up to date" : {
+      "comment" : "Alert title after Check for Updates finds nothing newer."
+    }
+  },
+  "version" : "1.0"
+}
