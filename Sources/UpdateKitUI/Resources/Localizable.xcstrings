@@ -27,6 +27,18 @@
             "state" : "needs_review",
             "value" : "%1$@ %2$@ est disponible"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ %2$@ è disponibile"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ %2$@ está disponível"
+          }
         }
       }
     },
@@ -55,6 +67,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%1$@ %2$@ est la dernière version."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ %2$@ è la versione più recente."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ %2$@ é a versão mais recente."
           }
         }
       }
@@ -85,6 +109,18 @@
             "state" : "needs_review",
             "value" : "%1$@ Le téléchargement ouvre l’image disque — faites glisser %2$@ dans votre dossier Applications pour terminer l’installation."
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ Il download apre l’immagine disco — trascina %2$@ nella cartella Applicazioni per completare l’installazione."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ O download abre a imagem de disco — arraste %2$@ para a pasta Aplicativos para concluir a instalação."
+          }
         }
       }
     },
@@ -114,6 +150,18 @@
             "state" : "needs_review",
             "value" : "%1$@ Faites glisser %2$@ dans votre dossier Applications pour l’installer."
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ Trascina %2$@ nella cartella Applicazioni per installarla."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ Arraste %2$@ para a pasta Aplicativos para instalá-lo."
+          }
         }
       }
     },
@@ -136,6 +184,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@ va se rouvrir dans un instant."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ si riaprirà tra un momento."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ será reaberto em instantes."
           }
         }
       }
@@ -160,6 +220,18 @@
             "state" : "needs_review",
             "value" : "Une version plus récente est disponible."
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "È disponibile una versione più recente."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Uma versão mais recente está disponível."
+          }
         }
       }
     },
@@ -182,6 +254,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Une version plus récente est disponible. %@ peut l’installer et se relancer."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "È disponibile una versione più recente. %@ può installarla e riaprirsi."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Uma versão mais recente está disponível. %@ pode instalá-la e reabrir."
           }
         }
       }
@@ -206,6 +290,18 @@
             "state" : "needs_review",
             "value" : "Annuler"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Annulla"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cancelar"
+          }
         }
       }
     },
@@ -228,6 +324,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Impossible de rechercher des mises à jour"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Impossibile controllare gli aggiornamenti"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Não foi possível verificar atualizações"
           }
         }
       }
@@ -252,6 +360,18 @@
             "state" : "needs_review",
             "value" : "Impossible d’installer la mise à jour"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Impossibile installare l’aggiornamento"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Não foi possível instalar a atualização"
+          }
         }
       }
     },
@@ -274,6 +394,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Ignorer jusqu’à la prochaine version"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ignora fino alla prossima versione"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dispensar até a próxima versão"
           }
         }
       }
@@ -298,6 +430,18 @@
             "state" : "needs_review",
             "value" : "Télécharger"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Scarica"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Baixar"
+          }
         }
       }
     },
@@ -320,6 +464,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Télécharger l’image disque…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Scarica immagine disco…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Baixar Imagem de Disco…"
           }
         }
       }
@@ -344,6 +500,18 @@
             "state" : "needs_review",
             "value" : "Le téléchargement ouvre l’image disque — faites glisser %@ dans votre dossier Applications pour terminer l’installation."
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Il download apre l’immagine disco — trascina %@ nella cartella Applicazioni per completare l’installazione."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "O download abre a imagem de disco — arraste %@ para a pasta Aplicativos para concluir a instalação."
+          }
         }
       }
     },
@@ -366,6 +534,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Faites glisser %@ dans votre dossier Applications pour l’installer."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Trascina %@ nella cartella Applicazioni per installarla."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Arraste %@ para a pasta Aplicativos para instalá-lo."
           }
         }
       }
@@ -390,6 +570,18 @@
             "state" : "needs_review",
             "value" : "Finalisation…"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Completamento…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Concluindo…"
+          }
         }
       }
     },
@@ -413,6 +605,18 @@
             "state" : "needs_review",
             "value" : "Plus tard"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Più tardi"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mais Tarde"
+          }
         }
       }
     },
@@ -432,6 +636,18 @@
           }
         },
         "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "OK"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "OK"
+          }
+        },
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "OK"
@@ -459,6 +675,18 @@
             "state" : "needs_review",
             "value" : "La mise à jour n’a pas pu être installée. Votre copie de %@ n’a pas été modifiée."
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Impossibile installare l’aggiornamento. La tua copia di %@ non è cambiata."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Não foi possível instalar a atualização. Sua cópia de %@ não foi alterada."
+          }
         }
       }
     },
@@ -481,6 +709,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Mettre à jour et relancer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aggiorna e riapri"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Atualizar e Reabrir"
           }
         }
       }
@@ -505,6 +745,18 @@
             "state" : "needs_review",
             "value" : "Mise à jour de %@"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aggiornamento di %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Atualizando %@"
+          }
         }
       }
     },
@@ -527,6 +779,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Mise à jour…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aggiornamento…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Atualizando…"
           }
         }
       }
@@ -551,6 +815,18 @@
             "state" : "needs_review",
             "value" : "Version %@"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Versione %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Versão %@"
+          }
         }
       }
     },
@@ -573,6 +849,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Vous êtes à jour"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hai la versione più recente"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tudo atualizado"
           }
         }
       }
