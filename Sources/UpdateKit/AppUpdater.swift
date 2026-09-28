@@ -44,11 +44,20 @@ public enum AppUpdater {
         public var text: String {
             switch self {
             case let .downloading(received, total):
-                let mb = { (bytes: Int) in String(format: "%.1f MB", Double(bytes) / 1_048_576) }
-                guard let total, total > 0 else { return "Downloading — \(mb(received))" }
-                return "Downloading — \(mb(received)) of \(mb(total))"
-            case .verifying: return "Verifying the download…"
-            case .relaunching: return "Relaunching…"
+                // Sizes in the user's own units and number format (MB, Mo, …).
+                let size = { (bytes: Int) in Int64(bytes).formatted(.byteCount(style: .file)) }
+                guard let total, total > 0 else {
+                    return String(localized: "Downloading — \(size(received))", bundle: #bundle,
+                                  comment: "Update progress when the total size is unknown. The argument is the amount downloaded so far, e.g. \"1.2 MB\".")
+                }
+                return String(localized: "Downloading — \(size(received)) of \(size(total))", bundle: #bundle,
+                              comment: "Update progress. The arguments are the amount downloaded so far and the total, e.g. \"1.2 MB of 5 MB\".")
+            case .verifying:
+                return String(localized: "Verifying the download…", bundle: #bundle,
+                              comment: "Update progress, after the download and before the relaunch.")
+            case .relaunching:
+                return String(localized: "Relaunching…", bundle: #bundle,
+                              comment: "Update progress, as the app quits to reopen as the new version.")
             }
         }
     }
@@ -68,14 +77,27 @@ public enum AppUpdater {
             switch self {
             case .cancelled: return nil   // the user asked; nothing to report back
             case .notEligible(let why): return why
-            case .download(let why): return "Couldn't download the update: \(why)"
+            case .download(let why):
+                return String(localized: "Couldn't download the update: \(why)", bundle: #bundle,
+                              comment: "Update error. The argument is a short lower-case reason, e.g. \"the server returned 404\".")
             case .hashMismatch:
-                return "The download didn't match its published checksum, so it wasn't installed."
-            case .unreadableArchive: return "The downloaded archive couldn't be expanded."
-            case .noAppInArchive: return "The download didn't contain an app."
-            case .signature(let why): return "The download isn't correctly signed: \(why)"
-            case .notNewer(let v): return "The download is version \(v), which isn't newer."
-            case .install(let why): return "Couldn't replace the installed app: \(why)"
+                return String(localized: "The download didn't match its published checksum, so it wasn't installed.",
+                              bundle: #bundle, comment: "Update error.")
+            case .unreadableArchive:
+                return String(localized: "The downloaded archive couldn't be expanded.", bundle: #bundle,
+                              comment: "Update error.")
+            case .noAppInArchive:
+                return String(localized: "The download didn't contain an app.", bundle: #bundle,
+                              comment: "Update error.")
+            case .signature(let why):
+                return String(localized: "The download isn't correctly signed: \(why)", bundle: #bundle,
+                              comment: "Update error. The argument is a short lower-case reason, e.g. \"it isn't signed\".")
+            case .notNewer(let v):
+                return String(localized: "The download is version \(v), which isn't newer.", bundle: #bundle,
+                              comment: "Update error. The argument is a version number, e.g. \"1.4.2\".")
+            case .install(let why):
+                return String(localized: "Couldn't replace the installed app: \(why)", bundle: #bundle,
+                              comment: "Update error. The argument is a short lower-case reason.")
             }
         }
     }
@@ -132,17 +154,24 @@ public enum AppUpdater {
         // Checked explicitly rather than left to the writability test below so the
         // reason names the cause instead of reading as a stray permissions problem.
         if isSandboxed, !bundleURL.path.hasPrefix(NSHomeDirectory()) {
-            return "This build of \(appName) is sandboxed, so it cannot replace itself in "
-                + "\(bundleURL.deletingLastPathComponent().lastPathComponent)."
+            let folder = bundleURL.deletingLastPathComponent().lastPathComponent
+            return String(localized: "This build of \(appName) is sandboxed, so it cannot replace itself in \(folder).",
+                          bundle: #bundle,
+                          comment: "Why the app can't update in place. The arguments are the app's name and a folder name, e.g. \"Applications\".")
         }
         // Translocated or read-only: the bundle isn't where the user thinks it is, and
         // in the DMG case the volume can't be written at all.
         if RunLocation.isUnsuitable(bundleURL) {
-            return "Move \(appName) to your Applications folder to update it in place."
+            return String(localized: "Move \(appName) to your Applications folder to update it in place.",
+                          bundle: #bundle,
+                          comment: "Why the app can't update in place: it is running from a disk image or a quarantined location. The argument is the app's name.")
         }
         let parent = bundleURL.deletingLastPathComponent()
         guard fileManager.isWritableFile(atPath: parent.path) else {
-            return "\(appName) can't write to \(parent.lastPathComponent), so it can't replace itself."
+            let folder = parent.lastPathComponent
+            return String(localized: "\(appName) can't write to \(folder), so it can't replace itself.",
+                          bundle: #bundle,
+                          comment: "Why the app can't update in place. The arguments are the app's name and a folder name.")
         }
         return nil
     }
@@ -173,12 +202,14 @@ public enum AppUpdater {
         var staticCode: SecStaticCode?
         let created = SecStaticCodeCreateWithPath(appURL as CFURL, [], &staticCode)
         guard created == errSecSuccess, let staticCode else {
-            return .signature("the bundle couldn't be read (OSStatus \(created))")
+            return .signature(String(localized: "the bundle couldn't be read (OSStatus \(created))", bundle: #bundle,
+                                     comment: "Reason inside \"The download isn't correctly signed: %@\". The argument is a system error code."))
         }
         var requirementRef: SecRequirement?
         let compiled = SecRequirementCreateWithString(requirement as CFString, [], &requirementRef)
         guard compiled == errSecSuccess, let requirementRef else {
-            return .signature("the requirement couldn't be compiled (OSStatus \(compiled))")
+            return .signature(String(localized: "the requirement couldn't be compiled (OSStatus \(compiled))", bundle: #bundle,
+                                     comment: "Reason inside \"The download isn't correctly signed: %@\". The argument is a system error code."))
         }
         // .checkAllArchitectures so a fat binary can't carry an unsigned slice.
         let flags: SecCSFlags = SecCSFlags(rawValue: kSecCSCheckAllArchitectures)
@@ -191,12 +222,18 @@ public enum AppUpdater {
 
     private static func describe(_ status: OSStatus) -> String {
         switch status {
-        case errSecCSUnsigned: return "it isn't signed"
-        case errSecCSReqFailed: return "it isn't signed by the expected developer certificate"
+        case errSecCSUnsigned:
+            return String(localized: "it isn't signed", bundle: #bundle,
+                          comment: "Reason inside \"The download isn't correctly signed: %@\"; \"it\" is the downloaded app.")
+        case errSecCSReqFailed:
+            return String(localized: "it isn't signed by the expected developer certificate", bundle: #bundle,
+                          comment: "Reason inside \"The download isn't correctly signed: %@\"; \"it\" is the downloaded app.")
         case errSecCSSignatureFailed, errSecCSSignatureInvalid:
-            return "its signature is invalid — the download may be damaged or altered"
+            return String(localized: "its signature is invalid — the download may be damaged or altered", bundle: #bundle,
+                          comment: "Reason inside \"The download isn't correctly signed: %@\"; \"its\" is the downloaded app's.")
         case errSecCSBadResource, errSecCSBadObjectFormat:
-            return "its contents don't match its signature"
+            return String(localized: "its contents don't match its signature", bundle: #bundle,
+                          comment: "Reason inside \"The download isn't correctly signed: %@\"; \"its\" is the downloaded app's.")
         default:
             let message = SecCopyErrorMessageString(status, nil) as String?
             return message ?? "OSStatus \(status)"
@@ -214,7 +251,8 @@ public enum AppUpdater {
     /// or rolled-back manifest can't walk the user backwards.
     public static func checkNewer(candidate: URL, than running: String) -> Failure? {
         guard let raw = shortVersion(ofBundleAt: candidate), let offered = AppVersion(raw) else {
-            return .signature("the download has no readable version")
+            return .signature(String(localized: "the download has no readable version", bundle: #bundle,
+                                     comment: "Reason inside \"The download isn't correctly signed: %@\"."))
         }
         guard let current = AppVersion(running) else { return nil }   // can't judge; allow
         guard offered > current else { return .notNewer(raw) }
@@ -245,11 +283,13 @@ extension AppUpdater {
             return .notEligible(reason)
         }
         guard let (archiveURL, expectedHash) = manifest.installableArchive else {
-            return .notEligible("This update doesn't publish an archive the app can install.")
+            return .notEligible(String(localized: "This update doesn't publish an archive the app can install.",
+                                       bundle: #bundle, comment: "Why an update can't be installed in place."))
         }
         if let helper = configuration.swap.helperURL(inBundle: bundleURL),
            !FileManager.default.isExecutableFile(atPath: helper.path) {
-            return .notEligible("The updater helper is missing from this build.")
+            return .notEligible(String(localized: "The updater helper is missing from this build.",
+                                       bundle: #bundle, comment: "Why an update can't be installed in place."))
         }
 
         // Staged INSIDE the install directory, not /tmp: the swap needs the
@@ -287,7 +327,8 @@ extension AppUpdater {
         // --- Verify the bytes before they become code ---
         report(.verifying)
         guard let data = try? Data(contentsOf: archiveFile, options: .mappedIfSafe) else {
-            return .install("the downloaded archive couldn't be read back")
+            return .install(String(localized: "the downloaded archive couldn't be read back", bundle: #bundle,
+                                   comment: "Reason inside \"Couldn't replace the installed app: %@\"."))
         }
         guard hashMatches(data, expected: expectedHash) else { return .hashMismatch }
 
@@ -387,13 +428,19 @@ extension AppUpdater {
         defer { try? FileManager.default.removeItem(at: fileURL) }
 
         if let http = response as? HTTPURLResponse, http.statusCode != 200 {
-            throw Failure.download("the server returned \(http.statusCode)")
+            throw Failure.download(String(localized: "the server returned \(http.statusCode)", bundle: #bundle,
+                                           comment: "Reason inside \"Couldn't download the update: %@\". The argument is an HTTP status code, e.g. 404."))
         }
         // A published size is part of the contract; a short read means truncation,
         // which the checksum would also catch but this says so more clearly.
         let written = (try? FileManager.default.attributesOfItem(atPath: fileURL.path)[.size] as? Int) ?? nil
         if let size, let written, written != size {
-            throw Failure.download("expected \(size) bytes, received \(written)")
+            // Exact byte counts: rounded to MB the two could read the same.
+            let exact = { (bytes: Int) in
+                Int64(bytes).formatted(.byteCount(style: .file, allowedUnits: .bytes))
+            }
+            throw Failure.download(String(localized: "expected \(exact(size)), received \(exact(written))", bundle: #bundle,
+                                           comment: "Reason inside \"Couldn't download the update: %@\". The arguments are exact sizes, e.g. \"5,242,880 bytes\"."))
         }
         do {
             try? FileManager.default.removeItem(at: destination)
@@ -441,10 +488,12 @@ extension AppUpdater {
     /// "1.4" and "1.4.0" are the same release.
     public static func checkAnnounced(candidate: URL, version announced: String) -> Failure? {
         guard let raw = shortVersion(ofBundleAt: candidate), let actual = AppVersion(raw) else {
-            return .signature("the download has no readable version")
+            return .signature(String(localized: "the download has no readable version", bundle: #bundle,
+                                     comment: "Reason inside \"The download isn't correctly signed: %@\"."))
         }
         guard let expected = AppVersion(announced), actual == expected else {
-            return .signature("the download is version \(raw), not the \(announced) offered")
+            return .signature(String(localized: "the download is version \(raw), not the \(announced) offered", bundle: #bundle,
+                                     comment: "Reason inside \"The download isn't correctly signed: %@\". The arguments are version numbers."))
         }
         return nil
     }
@@ -454,7 +503,8 @@ extension AppUpdater {
     public static func checkRequiredExecutables(_ relativePaths: [String], in bundle: URL) -> Failure? {
         for path in relativePaths
         where !FileManager.default.isExecutableFile(atPath: bundle.appendingPathComponent(path).path) {
-            return .install("the download has no \(path)")
+            return .install(String(localized: "the download has no \(path)", bundle: #bundle,
+                                   comment: "Reason inside \"Couldn't replace the installed app: %@\". The argument is a path inside the app, e.g. \"Contents/Helpers/tool\"."))
         }
         return nil
     }
@@ -530,7 +580,8 @@ extension AppUpdater {
     private static func launchHelper(_ helper: URL, arguments: [String],
                                      pid: pid_t, staged: URL, installed: URL) throws {
         guard FileManager.default.isExecutableFile(atPath: helper.path) else {
-            throw Failure.install("the updater helper is missing from this build")
+            throw Failure.install(String(localized: "the updater helper is missing from this build", bundle: #bundle,
+                                          comment: "Reason inside \"Couldn't replace the installed app: %@\"."))
         }
         // Private to this user: the helper is about to be run, and a world-writable
         // parent would let anyone swap it between the copy and the launch.
@@ -555,7 +606,8 @@ extension AppUpdater {
         do {
             try process.run()
         } catch {
-            throw Failure.install("the updater helper wouldn't start: \(error.localizedDescription)")
+            throw Failure.install(String(localized: "the updater helper wouldn't start: \(error.localizedDescription)", bundle: #bundle,
+                                          comment: "Reason inside \"Couldn't replace the installed app: %@\". The argument is a system error message."))
         }
     }
 }

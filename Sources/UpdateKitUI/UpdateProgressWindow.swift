@@ -29,7 +29,9 @@ public final class UpdateProgressWindow: NSObject, NSWindowDelegate {
         let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 340, height: 260),
                               styleMask: [.titled, .fullSizeContentView],
                               backing: .buffered, defer: false)
-        window.title = "Updating \(checker.configuration.appName)"
+        let appName = checker.configuration.appName
+        window.title = String(localized: "Updating \(appName)", bundle: #bundle,
+                              comment: "Title of the window shown while an update installs. The argument is the app's name.")
         window.titleVisibility = .hidden
         window.titlebarAppearsTransparent = true
         window.isMovableByWindowBackground = true
@@ -70,11 +72,13 @@ struct UpdateProgressView: View {
                     .padding(.bottom, 12)
             }
 
-            Text("Updating \(checker.configuration.appName)")
+            Text("Updating \(checker.configuration.appName)", bundle: #bundle,
+                 comment: "Title of the window shown while an update installs. The argument is the app's name.")
                 .font(.system(size: 14, weight: .medium))
 
             if let version = checker.availableVersion {
-                Text("Version \(version)")
+                Text("Version \(version)", bundle: #bundle,
+                     comment: "Under the update window's title. The argument is the new version number.")
                     .font(.system(size: 11))
                     .foregroundStyle(.secondary)
                     .padding(.top, 2)
@@ -91,7 +95,9 @@ struct UpdateProgressView: View {
                 ProgressView().progressViewStyle(.linear)
             }
 
-            Text(checker.installStage?.text ?? "Finishing…")
+            Text(checker.installStage?.text
+                 ?? String(localized: "Finishing…", bundle: #bundle,
+                           comment: "Update progress, between stages."))
                 .font(.system(size: 11))
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
@@ -100,7 +106,8 @@ struct UpdateProgressView: View {
             // Gone once the hand-off starts: from there the helper is already waiting on
             // this process to exit, and there is nothing left to call off.
             if checker.installStage != .relaunching {
-                Button("Cancel") {
+                Button(String(localized: "Cancel", bundle: #bundle,
+                              comment: "Button: stop the update download.")) {
                     checker.cancelInstall()
                     dismiss()
                 }
@@ -110,7 +117,8 @@ struct UpdateProgressView: View {
                 // Said out loud: an app that vanishes without warning is alarming, and
                 // for an app with no Dock icon there is nothing else on screen to say
                 // it is coming back.
-                Text("\(checker.configuration.appName) will reopen in a moment.")
+                Text("\(checker.configuration.appName) will reopen in a moment.", bundle: #bundle,
+                     comment: "Update window, just before the app quits to relaunch. The argument is the app's name.")
                     .font(.system(size: 11))
                     .foregroundStyle(.tertiary)
                     .padding(.top, 16)

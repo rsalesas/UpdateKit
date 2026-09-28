@@ -3,6 +3,9 @@ import PackageDescription
 
 let package = Package(
     name: "UpdateKit",
+    // British English is the source language; each target's String Catalog holds the
+    // English and its translations, and the apps using the package pick them up.
+    defaultLocalization: "en-GB",
     platforms: [
         .macOS(.v15),
     ],
@@ -11,8 +14,8 @@ let package = Package(
         .library(name: "UpdateKitUI", targets: ["UpdateKitUI"]),
     ],
     targets: [
-        .target(name: "UpdateKit"),
-        .target(name: "UpdateKitUI", dependencies: ["UpdateKit"]),
+        .target(name: "UpdateKit", resources: [.process("Resources")]),
+        .target(name: "UpdateKitUI", dependencies: ["UpdateKit"], resources: [.process("Resources")]),
         .testTarget(name: "UpdateKitTests", dependencies: ["UpdateKit", "UpdateKitUI"]),
     ]
 )

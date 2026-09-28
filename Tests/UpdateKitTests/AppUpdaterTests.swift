@@ -357,7 +357,10 @@ struct InstallStageTests {
         let stage = AppUpdater.InstallStage.downloading(receivedBytes: 2_621_440,
                                                         totalBytes: 5_242_880)
         #expect(abs((stage.fraction ?? 0) - 0.5) < 0.001)
-        #expect(stage.text == "Downloading — 2.5 MB of 5.0 MB")
+        // Sizes in the user's own units and number format, so compare like with like.
+        let received = Int64(2_621_440).formatted(.byteCount(style: .file))
+        let total = Int64(5_242_880).formatted(.byteCount(style: .file))
+        #expect(stage.text == "Downloading — \(received) of \(total)")
     }
 
     /// A server that doesn't say how big the file is leaves nothing to measure. The bar
@@ -366,7 +369,7 @@ struct InstallStageTests {
     func anUnknownDownloadSizeHasNoFraction() {
         let stage = AppUpdater.InstallStage.downloading(receivedBytes: 1_048_576, totalBytes: nil)
         #expect(stage.fraction == nil)
-        #expect(stage.text == "Downloading — 1.0 MB")
+        #expect(stage.text == "Downloading — \(Int64(1_048_576).formatted(.byteCount(style: .file)))")
     }
 
     /// The checks after the download have no measurable length; a bar frozen at 100%

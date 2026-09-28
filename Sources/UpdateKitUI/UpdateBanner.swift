@@ -38,7 +38,8 @@ public struct UpdateBanner: View {
                 HStack(spacing: 10) {
                     Image(systemName: "arrow.down.circle.fill")
                         .foregroundStyle(accent)
-                    Text("\(checker.configuration.appName) \(update.version) is available")
+                    Text(UpdateAlert.availableTitle(appName: checker.configuration.appName,
+                                                    version: update.version))
                         .font(.system(size: 12, weight: .medium))
                     if let failure = checker.installFailure {
                         Text(failure)
@@ -58,24 +59,30 @@ public struct UpdateBanner: View {
                     // when the install was started from the menu with no document open. Two
                     // indicators for one operation is how they drift apart.
                     if checker.isInstalling {
-                        Text("Updating…")
+                        Text("Updating…", bundle: #bundle,
+                             comment: "Update banner, while an update installs.")
                             .font(.system(size: 11))
                             .foregroundStyle(.secondary)
                     } else if case .install = UpdateAlert.offer(for: checker) {
                         // In place, and only when we know we can finish: an archive with a
                         // checksum and a writable location. The same decision the menu
                         // makes, so the two can't drift apart again.
-                        Button("Update and Relaunch") { UpdateAlert.install(with: checker) }
+                        Button(String(localized: "Update and Relaunch", bundle: #bundle,
+                                      comment: "Button: install the update in place and reopen the app.")) {
+                            UpdateAlert.install(with: checker)
+                        }
                             .controlSize(.small)
                     } else {
                         // Everything else keeps the old route — opening the DMG in the
                         // browser — rather than offering a button that would fail. Labelled
                         // for what it does: next to a version number, a bare "Download"
                         // reads as "install".
-                        Button("Download Disk Image…") { NSWorkspace.shared.open(update.url) }
-                            .controlSize(.small)
-                            .help((checker.ineligibilityReason.map { "\($0) " } ?? "")
-                                  + "Drag \(checker.configuration.appName) to your Applications folder to install it.")
+                        Button(String(localized: "Download Disk Image…", bundle: #bundle,
+                                      comment: "Button: open the update's disk image in the browser.")) {
+                            NSWorkspace.shared.open(update.url)
+                        }
+                        .controlSize(.small)
+                        .help(downloadHelp)
                     }
                     Button {
                         checker.dismissCurrent()
@@ -87,7 +94,8 @@ public struct UpdateBanner: View {
                             .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
-                    .help("Dismiss until the next version")
+                    .help(String(localized: "Dismiss until the next version", bundle: #bundle,
+                                 comment: "Tooltip on the update banner's close button."))
                 }
                 .padding(.horizontal, 14)
                 .frame(height: 34)
@@ -96,5 +104,18 @@ public struct UpdateBanner: View {
             }
             .transition(transition)
         }
+    }
+
+    /// The download button's tooltip: one whole sentence with the reason the app can't
+    /// update itself and one without, rather than the reason glued to the front.
+    private var downloadHelp: String {
+        let appName = checker.configuration.appName
+        if let reason = checker.ineligibilityReason {
+            return String(localized: "\(reason) Drag \(appName) to your Applications folder to install it.",
+                          bundle: #bundle,
+                          comment: "Tooltip on the Download Disk Image button. The first argument is a whole sentence saying why the app can't update itself; the second is the app's name.")
+        }
+        return String(localized: "Drag \(appName) to your Applications folder to install it.", bundle: #bundle,
+                      comment: "Tooltip on the Download Disk Image button. The argument is the app's name.")
     }
 }

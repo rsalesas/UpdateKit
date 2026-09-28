@@ -31,7 +31,10 @@ public final class UpdateChecker: ObservableObject {
     public struct HTTPError: LocalizedError {
         public let status: Int
         public init(status: Int) { self.status = status }
-        public var errorDescription: String? { "The update server returned status \(status)." }
+        public var errorDescription: String? {
+            String(localized: "The update server returned status \(status).", bundle: #bundle,
+                   comment: "Update check error. The argument is an HTTP status code, e.g. 404.")
+        }
     }
 
     /// `URLSession.data(for:)` does NOT throw on an HTTP error status — it hands back
@@ -213,10 +216,12 @@ public final class UpdateChecker: ObservableObject {
     /// Decide what a fetched manifest means for this copy of the app.
     private func resolve(_ manifest: UpdateManifest) -> State {
         guard let offered = AppVersion(manifest.version) else {
-            return .failed("Unreadable version in the update manifest.")
+            return .failed(String(localized: "Unreadable version in the update manifest.", bundle: #bundle,
+                                  comment: "Update check error: the published version number couldn't be read."))
         }
         guard let running = AppVersion(currentVersion) else {
-            return .failed("Unreadable version in this build.")
+            return .failed(String(localized: "Unreadable version in this build.", bundle: #bundle,
+                                  comment: "Update check error: the running app's version number couldn't be read."))
         }
         guard offered > running else { return .upToDate }
         guard meetsMinimumSystem(manifest) else { return .upToDate }

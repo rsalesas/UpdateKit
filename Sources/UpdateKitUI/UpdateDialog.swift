@@ -18,6 +18,9 @@ public enum UpdateDialog {
     /// Shows the dialog and returns the index of the button pressed. `buttons[0]` is the
     /// default (rightmost, Return); the last also answers to Escape, and is what a closed
     /// window counts as.
+    ///
+    /// The title, body and button titles are shown as given, never looked up: pass them
+    /// already localised.
     public static func run(title: String, body: String, buttons: [String]) -> Int {
         var choice = buttons.count - 1
 
