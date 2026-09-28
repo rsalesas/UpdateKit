@@ -15,6 +15,18 @@
             "state" : "new",
             "value" : "%1$@ can't write to %2$@, so it can't replace itself."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ no puede escribir en %2$@, así que no puede sustituirse a sí misma."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ ne peut pas écrire dans %2$@ et ne peut donc pas se remplacer."
+          }
         }
       }
     },
@@ -25,6 +37,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Das Update konnte nicht geladen werden: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No se pudo descargar la actualización: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Impossible de télécharger la mise à jour : %@"
           }
         }
       }
@@ -37,6 +61,18 @@
             "state" : "needs_review",
             "value" : "Die installierte App konnte nicht ersetzt werden: %@"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No se pudo sustituir la app instalada: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Impossible de remplacer l’app installée : %@"
+          }
         }
       }
     },
@@ -47,6 +83,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Wird geladen – %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Descargando — %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Téléchargement — %@"
           }
         }
       }
@@ -65,6 +113,18 @@
             "state" : "new",
             "value" : "Downloading — %1$@ of %2$@"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Descargando — %1$@ de %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Téléchargement — %1$@ sur %2$@"
+          }
         }
       }
     },
@@ -75,6 +135,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Bewege %@ in deinen Ordner „Programme“, um es direkt zu aktualisieren."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Traslada %@ a tu carpeta Aplicaciones para poder actualizarla ahí mismo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Placez %@ dans votre dossier Applications pour pouvoir le mettre à jour sur place."
           }
         }
       }
@@ -87,6 +159,18 @@
             "state" : "needs_review",
             "value" : "Wird neu gestartet …"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Volviendo a abrir…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Relance…"
+          }
         }
       }
     },
@@ -97,6 +181,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Der Download enthielt keine App."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La descarga no contenía ninguna app."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le téléchargement ne contenait aucune app."
           }
         }
       }
@@ -109,6 +205,18 @@
             "state" : "needs_review",
             "value" : "Der Download stimmte nicht mit seiner veröffentlichten Prüfsumme überein und wurde daher nicht installiert."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La descarga no coincidía con su suma de comprobación publicada, así que no se instaló."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le téléchargement ne correspondait pas à sa somme de contrôle publiée ; il n’a donc pas été installé."
+          }
         }
       }
     },
@@ -119,6 +227,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Der Download hat die Version %@, die nicht neuer ist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La descarga es la versión %@, que no es más reciente."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le téléchargement est la version %@, qui n’est pas plus récente."
           }
         }
       }
@@ -131,6 +251,18 @@
             "state" : "needs_review",
             "value" : "Der Download ist nicht korrekt signiert: %@"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La descarga no está firmada correctamente: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le téléchargement n’est pas correctement signé : %@"
+          }
         }
       }
     },
@@ -141,6 +273,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Das geladene Archiv konnte nicht entpackt werden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No se pudo descomprimir el archivo descargado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L’archive téléchargée n’a pas pu être décompressée."
           }
         }
       }
@@ -153,6 +297,18 @@
             "state" : "needs_review",
             "value" : "Der Update-Server hat den Status %lld zurückgegeben."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "El servidor de actualizaciones devolvió el estado %lld."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le serveur de mise à jour a renvoyé le code %lld."
+          }
         }
       }
     },
@@ -163,6 +319,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Das Update-Hilfsprogramm fehlt in diesem Build."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Falta el asistente de actualización en esta compilación."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L’assistant de mise à jour est absent de cette compilation."
           }
         }
       }
@@ -181,6 +349,18 @@
             "state" : "new",
             "value" : "This build of %1$@ is sandboxed, so it cannot replace itself in %2$@."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Esta compilación de %1$@ está en un entorno aislado, así que no puede sustituirse a sí misma en %2$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cette compilation de %1$@ est en sandbox ; elle ne peut donc pas se remplacer dans %2$@."
+          }
         }
       }
     },
@@ -191,6 +371,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Dieses Update bietet kein Archiv an, das die App installieren kann."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Esta actualización no publica ningún archivo que la app pueda instalar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cette mise à jour ne publie aucune archive que l’app peut installer."
           }
         }
       }
@@ -203,6 +395,18 @@
             "state" : "needs_review",
             "value" : "Die Versionsnummer im Update-Manifest ist nicht lesbar."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Versión ilegible en el manifiesto de actualización."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Version illisible dans le manifeste de mise à jour."
+          }
         }
       }
     },
@@ -214,6 +418,18 @@
             "state" : "needs_review",
             "value" : "Die Versionsnummer dieses Builds ist nicht lesbar."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Versión ilegible en esta compilación."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Version illisible dans cette compilation."
+          }
         }
       }
     },
@@ -224,6 +440,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Download wird geprüft …"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Verificando la descarga…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vérification du téléchargement…"
           }
         }
       }
@@ -242,6 +470,18 @@
             "state" : "new",
             "value" : "expected %1$@, received %2$@"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "se esperaba %1$@ y se recibió %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "attendu : %1$@, reçu : %2$@"
+          }
         }
       }
     },
@@ -252,6 +492,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "die App ist nicht signiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "no está firmada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "elle n’est pas signée"
           }
         }
       }
@@ -264,6 +516,18 @@
             "state" : "needs_review",
             "value" : "die App ist nicht mit dem erwarteten Entwicklerzertifikat signiert"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "no está firmada con el certificado de desarrollador esperado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "elle n’est pas signée par le certificat de développeur attendu"
+          }
         }
       }
     },
@@ -274,6 +538,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "ihr Inhalt stimmt nicht mit ihrer Signatur überein"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "su contenido no coincide con su firma"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "son contenu ne correspond pas à sa signature"
           }
         }
       }
@@ -286,6 +562,18 @@
             "state" : "needs_review",
             "value" : "ihre Signatur ist ungültig – der Download ist möglicherweise beschädigt oder verändert"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "su firma no es válida — la descarga puede estar dañada o alterada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "sa signature n’est pas valide — le téléchargement est peut-être endommagé ou modifié"
+          }
         }
       }
     },
@@ -296,6 +584,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "das Bundle konnte nicht gelesen werden (OSStatus %d)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "no se pudo leer el paquete (OSStatus %d)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "le paquet n’a pas pu être lu (OSStatus %d)"
           }
         }
       }
@@ -308,6 +608,18 @@
             "state" : "needs_review",
             "value" : "im Download fehlt %@"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "la descarga no contiene %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "le téléchargement ne contient pas %@"
+          }
         }
       }
     },
@@ -318,6 +630,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "der Download hat keine lesbare Versionsnummer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "la descarga no tiene una versión legible"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "le téléchargement n’a pas de version lisible"
           }
         }
       }
@@ -336,6 +660,18 @@
             "state" : "new",
             "value" : "the download is version %1$@, not the %2$@ offered"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "la descarga es la versión %1$@, no la %2$@ ofrecida"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "le téléchargement est la version %1$@, et non la %2$@ proposée"
+          }
         }
       }
     },
@@ -346,6 +682,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "das geladene Archiv konnte nicht wieder gelesen werden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "no se pudo volver a leer el archivo descargado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "l’archive téléchargée n’a pas pu être relue"
           }
         }
       }
@@ -358,6 +706,18 @@
             "state" : "needs_review",
             "value" : "die Anforderung konnte nicht kompiliert werden (OSStatus %d)"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "no se pudo compilar el requisito (OSStatus %d)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "l’exigence n’a pas pu être compilée (OSStatus %d)"
+          }
         }
       }
     },
@@ -368,6 +728,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "der Server hat %lld zurückgegeben"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "el servidor devolvió %lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "le serveur a renvoyé %lld"
           }
         }
       }
@@ -380,6 +752,18 @@
             "state" : "needs_review",
             "value" : "das Update-Hilfsprogramm fehlt in diesem Build"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "falta el asistente de actualización en esta compilación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "l’assistant de mise à jour est absent de cette compilation"
+          }
         }
       }
     },
@@ -390,6 +774,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "das Update-Hilfsprogramm ließ sich nicht starten: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "no se pudo iniciar el asistente de actualización: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "l’assistant de mise à jour n’a pas pu démarrer : %@"
           }
         }
       }

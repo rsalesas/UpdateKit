@@ -15,6 +15,18 @@
             "state" : "new",
             "value" : "%1$@ %2$@ is available"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ %2$@ ya está disponible"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ %2$@ est disponible"
+          }
         }
       }
     },
@@ -31,6 +43,18 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ %2$@ is the latest version."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ %2$@ es la versión más reciente."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ %2$@ est la dernière version."
           }
         }
       }
@@ -49,6 +73,18 @@
             "state" : "new",
             "value" : "%1$@ Downloading opens the disk image — drag %2$@ to your Applications folder to finish installing it."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ Al descargar se abre la imagen de disco — arrastra %2$@ a tu carpeta Aplicaciones para completar la instalación."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ Le téléchargement ouvre l’image disque — faites glisser %2$@ dans votre dossier Applications pour terminer l’installation."
+          }
         }
       }
     },
@@ -66,6 +102,18 @@
             "state" : "new",
             "value" : "%1$@ Drag %2$@ to your Applications folder to install it."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ Arrastra %2$@ a tu carpeta Aplicaciones para instalar la app."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ Faites glisser %2$@ dans votre dossier Applications pour l’installer."
+          }
         }
       }
     },
@@ -76,6 +124,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@ wird gleich wieder geöffnet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ se volverá a abrir en un momento."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ va se rouvrir dans un instant."
           }
         }
       }
@@ -88,6 +148,18 @@
             "state" : "needs_review",
             "value" : "Eine neuere Version ist verfügbar."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hay una versión más reciente disponible."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Une version plus récente est disponible."
+          }
         }
       }
     },
@@ -98,6 +170,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Eine neuere Version ist verfügbar. %@ kann sie installieren und neu starten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hay una versión más reciente disponible. %@ puede instalarla y volver a abrirse."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Une version plus récente est disponible. %@ peut l’installer et se relancer."
           }
         }
       }
@@ -110,6 +194,18 @@
             "state" : "needs_review",
             "value" : "Abbrechen"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cancelar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Annuler"
+          }
         }
       }
     },
@@ -120,6 +216,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Suche nach Updates fehlgeschlagen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No se pudieron buscar actualizaciones"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Impossible de rechercher des mises à jour"
           }
         }
       }
@@ -132,6 +240,18 @@
             "state" : "needs_review",
             "value" : "Update konnte nicht installiert werden"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No se pudo instalar la actualización"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Impossible d’installer la mise à jour"
+          }
         }
       }
     },
@@ -142,6 +262,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Bis zur nächsten Version ausblenden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ocultar hasta la próxima versión"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ignorer jusqu’à la prochaine version"
           }
         }
       }
@@ -154,6 +286,18 @@
             "state" : "needs_review",
             "value" : "Herunterladen"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Descargar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Télécharger"
+          }
         }
       }
     },
@@ -164,6 +308,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Disk-Image herunterladen …"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Descargar imagen de disco…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Télécharger l’image disque…"
           }
         }
       }
@@ -176,6 +332,18 @@
             "state" : "needs_review",
             "value" : "Nach dem Herunterladen öffnet sich das Disk-Image – ziehe %@ in deinen Ordner „Programme“, um die Installation abzuschließen."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Al descargar se abre la imagen de disco — arrastra %@ a tu carpeta Aplicaciones para completar la instalación."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le téléchargement ouvre l’image disque — faites glisser %@ dans votre dossier Applications pour terminer l’installation."
+          }
         }
       }
     },
@@ -186,6 +354,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Ziehe %@ in deinen Ordner „Programme“, um es zu installieren."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Arrastra %@ a tu carpeta Aplicaciones para instalar la app."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Faites glisser %@ dans votre dossier Applications pour l’installer."
           }
         }
       }
@@ -198,6 +378,18 @@
             "state" : "needs_review",
             "value" : "Wird abgeschlossen …"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Terminando…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Finalisation…"
+          }
         }
       }
     },
@@ -209,6 +401,18 @@
             "state" : "needs_review",
             "value" : "Später"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Más tarde"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Plus tard"
+          }
         }
       }
     },
@@ -216,6 +420,18 @@
       "comment" : "Button: close the alert.",
       "localizations" : {
         "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "OK"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aceptar"
+          }
+        },
+        "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "OK"
@@ -231,6 +447,18 @@
             "state" : "needs_review",
             "value" : "Das Update konnte nicht installiert werden. Deine Version von %@ bleibt unverändert."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No se pudo instalar la actualización. Tu copia de %@ no ha cambiado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La mise à jour n’a pas pu être installée. Votre copie de %@ n’a pas été modifiée."
+          }
         }
       }
     },
@@ -241,6 +469,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Aktualisieren und neu starten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Actualizar y volver a abrir"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mettre à jour et relancer"
           }
         }
       }
@@ -253,6 +493,18 @@
             "state" : "needs_review",
             "value" : "%@ wird aktualisiert"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Actualizando %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mise à jour de %@"
+          }
         }
       }
     },
@@ -264,6 +516,18 @@
             "state" : "needs_review",
             "value" : "Wird aktualisiert …"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Actualizando…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mise à jour…"
+          }
         }
       }
     },
@@ -271,6 +535,18 @@
       "comment" : "Under the update window's title. The argument is the new version number.",
       "localizations" : {
         "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Version %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Versión %@"
+          }
+        },
+        "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Version %@"
@@ -285,6 +561,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Alles ist aktuell"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tienes la versión más reciente"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vous êtes à jour"
           }
         }
       }
