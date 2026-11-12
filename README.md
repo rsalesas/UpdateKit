@@ -73,6 +73,8 @@ An app bundle can't replace itself while its own code is running. Something outs
 swap: .helper(relativePath: "Contents/Helpers/example", arguments: ["apply-update"])
 ```
 
+After the hand-off the app quits through `NSApp.terminate`, so `applicationShouldTerminate` runs as usual. It may return `.terminateLater` and reply from a Task when its own shutdown is done: the quit is asked for from a run-loop timer, not from inside a main-actor job, so that Task can run. If the app refuses the quit, `installUpdate` returns and the swap goes ahead on its own once its wait runs out.
+
 A helper of your own doesn't have to call `UpdateSwap.run`. Anything that honours `--pid`, `--staged` and `--installed` will do, and `arguments` can carry more (Claunnector passes the socket its helper waits on).
 
 If other programs launch something inside your bundle by absolute path, list it so a release that moved it is refused rather than installed:
