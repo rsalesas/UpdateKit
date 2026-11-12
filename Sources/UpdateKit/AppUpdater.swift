@@ -357,8 +357,34 @@ extension AppUpdater {
         } catch {
             return .install(error.localizedDescription)
         }
-        NSApp.terminate(nil)
+        // Suspended here, off the main queue, until the quit is refused; on success the
+        // process is gone first. Returning straight after scheduling it instead would let
+        // the caller drop "Relaunching…" for the moment before the app quits.
+        await withCheckedContinuation { (refused: CheckedContinuation<Void, Never>) in
+            quitSoon {
+                NSApp.terminate(nil)
+                refused.resume()   // terminate returned: the app said no
+            }
+        }
         return nil
+    }
+
+    /// Run `quit` on the next turn of the main run loop, from a timer rather than from
+    /// the main-actor job that asked for it.
+    ///
+    /// `installUpdate` runs in a main-actor Task, and a main-actor job is a block on the
+    /// main dispatch queue. Calling `terminate` from inside it deadlocked any app whose
+    /// `applicationShouldTerminate` returns `.terminateLater` and replies from a Task of
+    /// its own (Browsium seals its Sessions that way): `terminate` spins the run loop
+    /// waiting for the reply, but the main queue is serial and won't start the reply's
+    /// block until the one calling `terminate` returns — which it never does. The app
+    /// sat at "Relaunching…" until it was killed, and the swap went ahead only on its
+    /// 30-second fallback. A timer's callout is not a dispatch block, so
+    /// the main queue keeps draining underneath it. A quit chosen from the menu works
+    /// for the same reason, which is why the bug only showed through the updater.
+    static func quitSoon(_ quit: @escaping @MainActor () -> Void) {
+        let timer = Timer(timeInterval: 0, repeats: false) { _ in MainActor.assumeIsolated { quit() } }
+        RunLoop.main.add(timer, forMode: .common)
     }
 
     /// Progress for `download(_:expecting:to:report:)`.
