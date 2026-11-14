@@ -26,3 +26,12 @@ Test every check against input that should fail, not only against the happy path
 - Swift Testing, `swift test`. `UpdateFetchLiveTests` skips itself unless `Tests/Fixtures` is served on :8766 (`python3 -m http.server 8766`).
 - Comments explain *why*, and most record a bug that shipped once. Keep them when refactoring.
 - UI text uses `configuration.appName`. Never hard-code an app name.
+
+## Hand-over (`UpdateKitHandOver`)
+
+For an app's long-lived helpers. Vaelora's `vaelora mcp` and Claunnector's daemon each had their own version first; this one takes Claunnector's exec and signature checks and replaces its once-a-second idle poll with a signal.
+
+- **It switches at two moments only:** after input becomes readable but before reading it, and when nudged with SIGUSR1. No timer. The check at the top of `nextLine` runs before the wait, so it can't count as the check before reading; `firstRequestAfterUpdate` failed until the readable branch checked again.
+- **Settle time is counted from the file's ctime,** not from when the helper first noticed it, so a request long after an install doesn't wait.
+- **`HelperNudge` never signals a process that leaves SIGUSR1 at its default,** because the default ends it. It reads `p_sigignore | p_sigcatch` through `sysctl`.
+- **Tests run `HandOverDemo` for real.** They copy it, rename a fresh copy over it, and talk to it over pipes. A copied Apple binary (`/bin/sleep`) is killed by macOS on launch, so the "old helper" case is the demo with `HANDOVER_DEMO_NO_SIGNAL`.

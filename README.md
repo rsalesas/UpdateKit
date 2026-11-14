@@ -22,6 +22,7 @@ Pinning your team matters. A check that accepts any valid Developer ID accepts e
 |---|---|
 | `UpdateKit` | The checker, the verified download and install, and the swap. Foundation, AppKit and Security only. |
 | `UpdateKitUI` | SwiftUI pieces: a banner for document windows, the "update available" dialog, and a progress window. |
+| `UpdateKitHandOver` | For long-lived helpers such as MCP servers: become the updated build in place, keeping the process and its client's connection. Foundation and Security only. |
 
 macOS 15+, Swift 6.
 
@@ -82,6 +83,42 @@ If other programs launch something inside your bundle by absolute path, list it 
 ```swift
 requiredExecutables: ["Contents/Helpers/example"]
 ```
+
+### Helpers that outlive the update
+
+A helper another app launched, such as an MCP server an AI client started from `Contents/Helpers`, keeps running the old code after the bundle is replaced. Worse, macOS may withdraw its privacy access once that code is gone from disk. `UpdateKitHandOver` makes the helper `exec` the new build: the same process, parent, stdin and stdout, so the client never sees a disconnection.
+
+In the helper, read requests through `StdioHandOver` and send every reply through it:
+
+```swift
+import UpdateKitHandOver
+
+let handOver = StdioHandOver(watch: ExecutableWatch.forThisProcess())
+if HandOver.resumed {
+    // A client is connected and listed the old build's tools.
+    try? handOver.send(Data(#"{"jsonrpc":"2.0","method":"notifications/tools/list_changed"}"#.utf8))
+}
+while let request = handOver.nextLine() {
+    let reply = handle(request)
+    try? handOver.send(reply)
+}
+```
+
+In the app, at launch:
+
+```swift
+HelperNudge.nudge(helper: Bundle.main.bundleURL.appendingPathComponent("Contents/Helpers/example"))
+```
+
+When it switches:
+
+- **Before reading each request.** It waits until input is readable, checks the launch path, and switches with the request still in the pipe, so the new code answers it.
+- **When nudged** (`SIGUSR1`). An idle helper switches at once instead of at its next request. The app nudges at launch, which follows both an in-app update and an install from the disk image. A helper too old to handle the signal isn't sent it, since the default action would end it.
+- **Never otherwise.** There is no timer; an idle helper sleeps until input or the nudge arrives.
+
+What it switches to: the file at the helper's launch path, once that is a different file (by inode), has been in place for two seconds, and meets the running build's designated requirement. A Debug build signed to run locally has a requirement only an identical copy meets, so it never switches. A refused or failed switch leaves the old code serving.
+
+It switches only with nothing in flight and nothing it has read left unanswered. A server that keeps state between requests (open files, sessions) must be able to rebuild it in the new image, or not use this.
 
 ## Publishing a release
 
