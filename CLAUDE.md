@@ -35,3 +35,12 @@ For an app's long-lived helpers. Vaelora's `vaelora mcp` and Claunnector's daemo
 - **Settle time is counted from the file's ctime,** not from when the helper first noticed it, so a request long after an install doesn't wait.
 - **`HelperNudge` never signals a process that leaves SIGUSR1 at its default,** because the default ends it. It reads `p_sigignore | p_sigcatch` through `sysctl`.
 - **Tests run `HandOverDemo` for real.** They copy it, rename a fresh copy over it, and talk to it over pipes. A copied Apple binary (`/bin/sleep`) is killed by macOS on launch, so the "old helper" case is the demo with `HANDOVER_DEMO_NO_SIGNAL`.
+
+## Windows across the update (`WindowsAcrossUpdate`)
+
+The update's `NSApp.terminate` is an ordinary quit, and with the default "Close windows when quitting" setting AppKit discards the saved windows. So `installUpdate` calls `keep()` just before the quit, and `UpdateChecker.init` calls `finishRelaunch()`.
+
+- **Documents are reopened by UpdateKit, from bookmarks.** Setting `NSQuitAlwaysKeepsWindows` from inside Vaelora right before `terminate` still discarded its SwiftUI document windows. It did keep a plain AppKit window, so the setting stays too, for apps with ordinary windows.
+- **Reopen after `didFinishLaunching`.** Before that, a SwiftUI document app is still deciding whether to show its Open panel.
+- **Only the update's quit keeps anything.** The marker key means a user's own `NSQuitAlwaysKeepsWindows` is never removed. A refused quit calls `cancel()`.
+- **To test against a real app without touching the user's Recents**, build it with `PRODUCT_BUNDLE_IDENTIFIER` overridden. A build signed differently under the same bundle id takes over the recent-documents list and empties it.
