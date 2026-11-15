@@ -360,10 +360,14 @@ extension AppUpdater {
         // Suspended here, off the main queue, until the quit is refused; on success the
         // process is gone first. Returning straight after scheduling it instead would let
         // the caller drop "Relaunching…" for the moment before the app quits.
+        // The windows open now come back after the relaunch; see WindowsAcrossUpdate.
+        WindowsAcrossUpdate.keep()
         await withCheckedContinuation { (refused: CheckedContinuation<Void, Never>) in
             quitSoon {
                 NSApp.terminate(nil)
-                refused.resume()   // terminate returned: the app said no
+                // terminate returned: the app said no. Its next quit is an ordinary one.
+                WindowsAcrossUpdate.cancel()
+                refused.resume()
             }
         }
         return nil

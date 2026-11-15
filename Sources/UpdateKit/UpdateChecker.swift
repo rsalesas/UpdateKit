@@ -62,6 +62,9 @@ public final class UpdateChecker: ObservableObject {
         self.fetch = fetch
         self.currentVersion = currentVersion
         self.systemVersion = systemVersion
+        // Every app makes its checker at launch, so this is where the relaunched build
+        // reopens what the update's quit recorded, and quitting goes back to normal.
+        WindowsAcrossUpdate.finishRelaunch()
     }
 
     // MARK: - Preferences
