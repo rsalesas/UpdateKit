@@ -22,13 +22,57 @@ import Foundation
 ///   switches straight away instead of waiting for a request, which matters for a helper
 ///   that works in the background, as Claunnector's does.
 ///
+/// A helper that serves requests concurrently adds a condition, not a moment: a build that
+/// is ready waits until no request is in flight, and the last one to finish wakes the
+/// reader to switch (see `nextRequest()`).
+///
 /// There is no timer. An idle helper sleeps in `poll` until input or the signal arrives.
 /// The one exception is an install still settling (see `ExecutableWatch`): then it wakes
 /// once, when the settle time is up.
 ///
-/// Call `nextLine()` from one thread, and only after the previous request's reply has
-/// been sent. Send everything through `send(_:)`, so a switch never cuts a message short.
+/// A helper reads in one of two ways, and must pick one:
+///
+/// * **One request at a time:** `nextLine()`, called only after the previous request's
+///   reply has been sent. Nothing else to do: between two calls nothing is in flight.
+/// * **Several at once:** `nextRequest()`, and `finish()` on each request once its reply
+///   (if any) has been sent. The switch then also waits until no request is in flight.
+///   While an installed build waits for that, nothing more is read: whatever the client
+///   sends meanwhile stays in the pipe for the new build, as it would for a serial helper,
+///   so the requests after an update still reach the new code. The cost is that new
+///   requests wait for the slowest one in flight, which is no worse than serving them
+///   one at a time.
+///
+/// Read from one thread. Send everything through `send(_:)`, from any thread, so a
+/// switch never cuts a message short.
 public final class StdioHandOver: @unchecked Sendable {
+    /// A line read by `nextRequest()`, counted as in flight until `finish()`.
+    public final class Request: @unchecked Sendable {
+        /// The line, without its newline.
+        public let line: Data
+        private weak var owner: StdioHandOver?
+        private let lock = NSLock()
+        private var finished = false
+
+        init(line: Data, owner: StdioHandOver) {
+            self.line = line
+            self.owner = owner
+        }
+
+        /// Ends the request: call once its reply has been sent, or when it needs none.
+        /// From any thread; calls after the first do nothing. Keep the request until
+        /// then: one that is released unfinished counts as finished, so a forgotten
+        /// request can't hold an update back for good.
+        public func finish() {
+            let first = lock.withLock { () -> Bool in
+                defer { finished = true }
+                return !finished
+            }
+            if first { owner?.requestFinished() }
+        }
+
+        deinit { finish() }
+    }
+
     private let inputFD: Int32
     private let outputFD: Int32
     private let watch: ExecutableWatch?
@@ -39,6 +83,13 @@ public final class StdioHandOver: @unchecked Sendable {
     private var wakeRead: Int32 = -1
     private var wakeWrite: Int32 = -1
     private var signalSource: DispatchSourceSignal?
+    /// Guards the three below, which `Request.finish()` touches from other threads.
+    private let flightLock = NSLock()
+    private var inFlight = 0
+    /// A build is ready and waits for `inFlight` to reach zero; the last finish wakes
+    /// the reader.
+    private var waitingForIdle = false
+    private var signalled = false
 
     /// Told what happened, for a helper's own log. Never written to the client.
     public var log: (@Sendable (String) -> Void)?
@@ -67,7 +118,8 @@ public final class StdioHandOver: @unchecked Sendable {
             Darwin.signal(signal, SIG_IGN)
             let source = DispatchSource.makeSignalSource(signal: signal, queue: .global())
             let wake = wakeWrite
-            source.setEventHandler {
+            source.setEventHandler { [weak self] in
+                self?.flightLock.withLock { self?.signalled = true }
                 var byte: UInt8 = 1
                 _ = Darwin.write(wake, &byte, 1)
             }
@@ -84,8 +136,43 @@ public final class StdioHandOver: @unchecked Sendable {
 
     /// The next newline-terminated line, without its newline, or nil at end of input.
     /// Blank lines are skipped. May become a newer build instead of returning; the new
-    /// image then reads the same line.
+    /// image then reads the same line. For a helper that serves one request at a time:
+    /// call it only once the previous reply has been sent.
     public func nextLine() -> Data? {
+        readLine()
+    }
+
+    /// The next request, counted as in flight until its `finish()`, or nil at end of
+    /// input. For a helper that serves requests concurrently: it may call this again
+    /// straight away. Like `nextLine()` it may become a newer build instead of
+    /// returning, but only with no request in flight.
+    public func nextRequest() -> Request? {
+        guard let line = readLine() else { return nil }
+        // Counted before returning, on the reading thread: the only switches happen in
+        // `readLine`, on this thread, so none can come between the read and the count.
+        flightLock.withLock { inFlight += 1 }
+        return Request(line: line, owner: self)
+    }
+
+    /// How many requests from `nextRequest()` have not yet finished.
+    public var requestsInFlight: Int {
+        flightLock.withLock { inFlight }
+    }
+
+    private func requestFinished() {
+        let wake = flightLock.withLock { () -> Bool in
+            inFlight -= 1
+            guard inFlight == 0, waitingForIdle else { return false }
+            waitingForIdle = false
+            return true
+        }
+        if wake, wakeWrite >= 0 {
+            var byte: UInt8 = 1
+            _ = Darwin.write(wakeWrite, &byte, 1)
+        }
+    }
+
+    private func readLine() -> Data? {
         while true {
             if let newline = buffer.firstIndex(of: 0x0A) {
                 let line = Data(buffer[buffer.startIndex..<newline])
@@ -99,11 +186,14 @@ public final class StdioHandOver: @unchecked Sendable {
                 return buffer.allSatisfy(Self.isWhitespace) ? nil : buffer
             }
 
-            // Nothing buffered: the safe moment.
+            // Nothing buffered: the safe moment, if no request is in flight.
             var timeout: Int32 = -1
             switch watch?.check() {
             case .ready:
-                switchNow()
+                if !switchWhenIdle() {
+                    waitUntilIdle()
+                    continue
+                }
             case .settling(let until):
                 timeout = Self.milliseconds(until: until)
             default:
@@ -122,7 +212,9 @@ public final class StdioHandOver: @unchecked Sendable {
 
             if fds.count > 1, fds[1].revents != 0 {
                 drainWake()
-                log?("Asked to switch to the installed build")
+                if flightLock.withLock({ () -> Bool in defer { signalled = false }; return signalled }) {
+                    log?("Asked to switch to the installed build")
+                }
                 continue                     // checked at the top of the loop
             }
             guard fds[0].revents != 0 else { continue }
@@ -133,7 +225,9 @@ public final class StdioHandOver: @unchecked Sendable {
             // so the new code answers this request rather than the old.
             switch watch?.check() {
             case .ready:
-                switchNow()                  // returns only if the switch failed
+                // Returns only if the switch failed, or requests are still in flight;
+                // then the top of the loop waits for them, leaving this one unread.
+                if !switchWhenIdle() { continue }
             case .settling(let until):
                 let wait = until.timeIntervalSinceNow
                 if wait > 0 { usleep(useconds_t(min(wait, 10) * 1_000_000)) }
@@ -154,6 +248,36 @@ public final class StdioHandOver: @unchecked Sendable {
     }
 
     // MARK: - Switching
+
+    /// Switches if no request is in flight, and returns true having tried (it returns at
+    /// all only if the exec failed). Otherwise records that the last request to finish
+    /// must wake the reader, and returns false.
+    private func switchWhenIdle() -> Bool {
+        let busy = flightLock.withLock { () -> Int in
+            if inFlight > 0 { waitingForIdle = true }
+            return inFlight
+        }
+        guard busy == 0 else { return false }
+        switchNow()
+        return true
+    }
+
+    /// Sleeps until the last request in flight finishes (or a nudge arrives), without
+    /// reading input: what the client sends now is for the new build.
+    private func waitUntilIdle() {
+        let busy = flightLock.withLock { inFlight }
+        guard busy > 0 else { return }
+        log?("An update installed a new build; switching once \(busy) request(s) in flight finish")
+        guard wakeRead >= 0 else {
+            // No pipe to be woken through: look again shortly.
+            usleep(50_000)
+            return
+        }
+        var fds = [pollfd(fd: wakeRead, events: Int16(POLLIN), revents: 0)]
+        while poll(&fds, 1, -1) < 0, errno == EINTR {}
+        drainWake()
+        flightLock.withLock { signalled = false }
+    }
 
     private func switchNow() {
         guard let watch else { return }

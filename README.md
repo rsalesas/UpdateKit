@@ -104,6 +104,19 @@ while let request = handOver.nextLine() {
 }
 ```
 
+A helper that serves requests concurrently reads with `nextRequest()` instead, and finishes each request once its reply is sent:
+
+```swift
+while let request = handOver.nextRequest() {
+    Task {
+        defer { request.finish() }
+        try? handOver.send(await handle(request.line))
+    }
+}
+```
+
+An update then waits until no request is in flight. Meanwhile nothing more is read, so what the client sends stays in the pipe for the new build.
+
 In the app, at launch:
 
 ```swift
@@ -114,6 +127,7 @@ When it switches:
 
 - **Before reading each request.** It waits until input is readable, checks the launch path, and switches with the request still in the pipe, so the new code answers it.
 - **When nudged** (`SIGUSR1`). An idle helper switches at once instead of at its next request. The app nudges at launch, which follows both an in-app update and an install from the disk image. A helper too old to handle the signal isn't sent it, since the default action would end it.
+- **When the last request in flight finishes**, for a helper reading with `nextRequest()` whose update was ready while requests were running.
 - **Never otherwise.** There is no timer; an idle helper sleeps until input or the nudge arrives.
 
 What it switches to: the file at the helper's launch path, once that is a different file (by inode), has been in place for two seconds, and meets the running build's designated requirement. A Debug build signed to run locally has a requirement only an identical copy meets, so it never switches. A refused or failed switch leaves the old code serving.
