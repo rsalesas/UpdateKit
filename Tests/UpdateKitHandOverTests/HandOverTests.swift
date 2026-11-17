@@ -175,6 +175,34 @@ struct LineReadingTests {
         let (handOver, _) = reader(String(repeating: "x\n", count: 5000))
         #expect(lines(handOver).count == 5000)
     }
+
+    @Test("a request counts as in flight from its reading until it finishes, once")
+    func countsInFlight() {
+        let (handOver, _) = reader("one\ntwo\nthree\n")
+        let one = handOver.nextRequest()
+        let two = handOver.nextRequest()
+        #expect(handOver.requestsInFlight == 2)
+        one?.finish()
+        one?.finish()
+        #expect(handOver.requestsInFlight == 1, "a second finish must not count again")
+        #expect(two.map { String(decoding: $0.line, as: UTF8.self) } == "two")
+        do {
+            // Released without finishing: counted as finished, so it can't hold an
+            // update back for good.
+            _ = handOver.nextRequest()
+        }
+        #expect(handOver.requestsInFlight == 1)
+        two?.finish()
+        #expect(handOver.requestsInFlight == 0)
+        #expect(handOver.nextRequest() == nil)
+    }
+
+    @Test("reading one line at a time counts nothing as in flight")
+    func serialCountsNothing() {
+        let (handOver, _) = reader("one\ntwo\n")
+        _ = handOver.nextLine()
+        #expect(handOver.requestsInFlight == 0)
+    }
 }
 
 // MARK: - The real thing
@@ -186,10 +214,12 @@ final class DemoClient {
     private let fromChild = Pipe()
     private var buffer = Data()
 
-    init(executable: URL, settle: Double = 0, handlesSignal: Bool = true) throws {
+    init(executable: URL, settle: Double = 0, handlesSignal: Bool = true,
+         concurrent: Bool = false) throws {
         process.executableURL = executable
         var extra = ["HANDOVER_DEMO_SETTLE": String(settle)]
         if !handlesSignal { extra["HANDOVER_DEMO_NO_SIGNAL"] = "1" }
+        if concurrent { extra["HANDOVER_DEMO_CONCURRENT"] = "1" }
         process.environment = ProcessInfo.processInfo.environment.merging(extra) { $1 }
         process.standardInput = toChild
         process.standardOutput = fromChild
@@ -202,6 +232,10 @@ final class DemoClient {
 
     func send(_ text: String) {
         toChild.fileHandleForWriting.write(Data((text + "\n").utf8))
+    }
+
+    func closeInput() throws {
+        try toChild.fileHandleForWriting.close()
     }
 
     /// The next line the helper writes, or nil if none comes within `timeout`.
@@ -374,6 +408,73 @@ struct HandOverTests {
         try install(try demoBinary(), at: url)
         _ = client.ask("two")
         try client.process.standardInput.flatMap { $0 as? Pipe }?.fileHandleForWriting.close()
+        client.process.waitUntilExit()
+        #expect(client.process.terminationStatus == 0)
+    }
+
+    // MARK: Helpers that serve requests concurrently
+
+    @Test("requests are served at once: a quick one isn't held up by a slow one")
+    func concurrentRequestsOverlap() throws {
+        let url = try helper()
+        let client = try DemoClient(executable: url, concurrent: true)
+        client.send("slow")
+        client.send("quick")
+        #expect(DemoClient.fields(try #require(client.line()))["request"] == "quick")
+        #expect(DemoClient.fields(try #require(client.line()))["request"] == "slow")
+    }
+
+    @Test("an update waits for the request in flight, and the next request reaches the new build")
+    func updateWaitsForRequestInFlight() throws {
+        let url = try helper()
+        let client = try DemoClient(executable: url, concurrent: true)
+        let before = client.ask("one")
+        client.send("slow")
+        usleep(200_000)                      // read, and in flight
+        try install(try demoBinary(), at: url)
+        client.send("next")
+
+        // The slow request is answered by the build that read it, and nothing is lost.
+        let slow = DemoClient.fields(try #require(client.line()))
+        #expect(slow["request"] == "slow")
+        #expect(slow["generation"] == "0")
+        // "next" arrived with the update ready but a request in flight: it was left in
+        // the pipe, so the new build answers it, in the same process.
+        var next: [String: String] = [:]
+        while let line = client.line() {
+            if line.hasPrefix("resumed") { continue }
+            next = DemoClient.fields(line)
+            break
+        }
+        #expect(next["request"] == "next")
+        #expect(next["generation"] == "1")
+        #expect(next["pid"] == before["pid"])
+    }
+
+    @Test("a nudge while a request is in flight switches only once it is answered")
+    func nudgeWaitsForRequestInFlight() throws {
+        let url = try helper()
+        let client = try DemoClient(executable: url, concurrent: true)
+        let before = client.ask("one")
+        client.send("slow")
+        usleep(200_000)
+        try install(try demoBinary(), at: url)
+        #expect(HelperNudge.nudge(helper: url).map(String.init) == [before["pid"]])
+
+        let first = DemoClient.fields(try #require(client.line()))
+        #expect(first["request"] == "slow", "the switch must not come before the answer it owes")
+        #expect(first["generation"] == "0")
+        #expect(client.line(timeout: 10) == "resumed generation=1")
+        #expect(client.ask("two")["generation"] == "1")
+    }
+
+    @Test("closing the pipe with a request in flight still gets its answer")
+    func eofWithRequestInFlight() throws {
+        let url = try helper()
+        let client = try DemoClient(executable: url, concurrent: true)
+        client.send("slow")
+        try client.closeInput()
+        #expect(DemoClient.fields(try #require(client.line()))["request"] == "slow")
         client.process.waitUntilExit()
         #expect(client.process.terminationStatus == 0)
     }
