@@ -46,7 +46,15 @@ public enum UpdateSwap {
             exit(2)
         }
 
-        waitForExit(of: parsed.pid)
+        guard waitForExit(of: parsed.pid) else {
+            // Still running. Swapping now would start the new copy beside the old one,
+            // and two copies of an app that owns a socket or a mounted volume fight over
+            // it. Leave the running app alone; it offers the update again next time.
+            try? FileManager.default.removeItem(at: parsed.staged)
+            FileHandle.standardError.write(
+                Data("apply-update: the app is still running; update abandoned\n".utf8))
+            exit(1)
+        }
 
         do {
             try replace(parsed.installed, with: parsed.staged)
@@ -69,14 +77,26 @@ public enum UpdateSwap {
         _ = try FileManager.default.replaceItemAt(installed, withItemAt: staged)
     }
 
-    /// Poll until the process is gone. `kill(pid, 0)` reports reachability without
-    /// signalling; we are not the parent, so `waitpid` isn't available to us.
-    public static func waitForExit(of pid: pid_t, timeout: TimeInterval = 30) {
+    /// How long the swap waits for the app to quit before giving up.
+    ///
+    /// This was thirty seconds, after which the swap went ahead anyway. Browsium seals
+    /// its encrypted Sessions as it quits, and one took longer than that: the swap
+    /// relaunched the new copy while the old one was still running, and the two held
+    /// the same socket for a minute. An app that is slow to quit is still quitting, so
+    /// wait for it; one that never quits keeps running the version it has.
+    public static let exitTimeout: TimeInterval = 600
+
+    /// Poll until the process is gone; false if it is still running at `timeout`.
+    /// `kill(pid, 0)` reports reachability without signalling; we are not the parent,
+    /// so `waitpid` isn't available to us.
+    @discardableResult
+    public static func waitForExit(of pid: pid_t, timeout: TimeInterval = exitTimeout) -> Bool {
         let deadline = Date().addingTimeInterval(timeout)
         while Date() < deadline {
-            if kill(pid, 0) != 0 { return }        // ESRCH: it has exited
+            if kill(pid, 0) != 0 { return true }   // ESRCH: it has exited
             usleep(100_000)
         }
+        return kill(pid, 0) != 0
     }
 
     private static func relaunch(_ app: URL) {
@@ -94,16 +114,21 @@ public enum UpdateSwap {
 /// being replaced. It can't do `replaceItemAt`'s single atomic exchange, so it does
 /// the next best thing: move the old bundle aside, move the new one in, and if that
 /// second move fails, put the old one back. A failure leaves the original in place.
+/// Like `UpdateSwap`, it never swaps while the app is still running.
 ///
 /// The paths reach the script as positional parameters, never spliced into its text,
 /// so a folder name with quotes or `$` in it can't change what the script does.
 enum BuiltInSwap {
 
     static let script = #"""
-        pid="$1"; staged="$2"; installed="$3"; relaunch="$4"
+        pid="$1"; staged="$2"; installed="$3"; relaunch="$4"; limit="$5"
         old="${installed%.app}.updatekit-old-$$.app"
         i=0
-        while kill -0 "$pid" 2>/dev/null && [ "$i" -lt 300 ]; do sleep 0.1; i=$((i + 1)); done
+        while kill -0 "$pid" 2>/dev/null && [ "$i" -lt "$limit" ]; do sleep 0.1; i=$((i + 1)); done
+        if kill -0 "$pid" 2>/dev/null; then
+            rm -rf "$staged"
+            exit 1
+        fi
         if mv "$installed" "$old"; then
             if mv "$staged" "$installed"; then
                 rm -rf "$old"
@@ -121,11 +146,13 @@ enum BuiltInSwap {
     /// Start the script and return without waiting; it waits for `pid` to exit.
     @discardableResult
     static func launch(pid: pid_t, staged: URL, installed: URL,
-                       relaunch: Bool = true) throws -> Process {
+                       relaunch: Bool = true,
+                       timeout: TimeInterval = UpdateSwap.exitTimeout) throws -> Process {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/bin/sh")
         process.arguments = ["-c", script, "updatekit-swap",
-                             String(pid), staged.path, installed.path, relaunch ? "1" : "0"]
+                             String(pid), staged.path, installed.path, relaunch ? "1" : "0",
+                             String(Int(timeout * 10))]
         process.standardOutput = FileHandle.nullDevice
         process.standardError = FileHandle.nullDevice
         try process.run()
