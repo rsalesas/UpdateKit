@@ -26,6 +26,15 @@ struct SwapTests {
         return p.processIdentifier
     }
 
+    /// A child that keeps running until the test stops it.
+    private func runningProcess() throws -> Process {
+        let p = Process()
+        p.executableURL = URL(fileURLWithPath: "/bin/sleep")
+        p.arguments = ["30"]
+        try p.run()
+        return p
+    }
+
     private func runBuiltIn(staged: URL, installed: URL) throws {
         let process = try BuiltInSwap.launch(pid: try exitedPID(), staged: staged,
                                              installed: installed, relaunch: false)
@@ -112,7 +121,36 @@ struct SwapTests {
     func waitForExitedProcess() throws {
         let pid = try exitedPID()
         let start = Date()
-        UpdateSwap.waitForExit(of: pid, timeout: 5)
+        #expect(UpdateSwap.waitForExit(of: pid, timeout: 5))
         #expect(Date().timeIntervalSince(start) < 1)
+    }
+
+    @Test("waiting for a process that keeps running reports it still running")
+    func waitForRunningProcess() throws {
+        let running = try runningProcess()
+        defer { running.terminate() }
+        #expect(!UpdateSwap.waitForExit(of: running.processIdentifier, timeout: 0.3))
+    }
+
+    /// An app slow to quit used to be swapped out from under itself after thirty
+    /// seconds, and the new copy started beside the old one.
+    @Test("the built-in swap leaves a running app alone")
+    func builtInSwapWaitsForTheApp() throws {
+        let dir = temp.child("running")
+        let installed = dir.appendingPathComponent("Example.app")
+        let staged = dir.appendingPathComponent(".updatekit-staged-1.app")
+        try makeApp(at: installed, version: "1.0")
+        try makeApp(at: staged, version: "2.0")
+        let running = try runningProcess()
+        defer { running.terminate() }
+
+        let process = try BuiltInSwap.launch(pid: running.processIdentifier, staged: staged,
+                                             installed: installed, relaunch: false, timeout: 0.3)
+        process.waitUntilExit()
+
+        #expect(process.terminationStatus == 1)
+        #expect(AppUpdater.shortVersion(ofBundleAt: installed) == "1.0")
+        let leftovers = try FileManager.default.contentsOfDirectory(atPath: dir.path)
+        #expect(leftovers == ["Example.app"], "the staged copy is removed: \(leftovers)")
     }
 }

@@ -18,6 +18,7 @@ Test every check against input that should fail, not only against the happy path
 
 - `.helper` → `UpdateSwap.run`: one atomic `replaceItemAt`.
 - `.builtIn` → `BuiltInSwap.script`: `mv` aside, `mv` in, with rollback. Paths are **positional parameters**, never spliced into the script text. `SwapTests` has a directory named with `$(…)` and quotes to hold that in place.
+- Both wait up to `UpdateSwap.exitTimeout` (ten minutes) for the app to quit and **never swap while it runs**: a still-running app keeps its version and the staged copy is removed. A 30-second wait that then swapped anyway started Browsium's new copy beside the old one.
 - Staging is removed in `handOff`, before the app quits. The `defer` in `installUpdate` covers failures only: on success the process is gone before it runs.
 - The staged copy is always placed in the install directory, never `/tmp`, so the swap is a rename on the same volume.
 
